@@ -1,0 +1,17 @@
+---
+title: "Stress_Analysis_On_Reddit"
+author: "Melanie McCord"
+date: "9/30/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+Now importing the necessary libraries.
+```{r}
+library(tidytext)
+library(tidyverse)
+
+```
+
