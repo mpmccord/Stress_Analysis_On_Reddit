@@ -7,11 +7,29 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+# load required packages
+library(readr) # reading and writing delimited text files
+library(dplyr) # SQL-style data processing
+library(tidytext) # text analysis in R
+library(stringr) # working with text strings
+library(lubridate) # working with times and dates
+library(tidyr) # data reshaping
 ```
-Now importing the necessary libraries.
+Now let's start off by reading in the training and test data.
 ```{r}
-library(tidytext)
-library(tidyverse)
-
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
+train_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
+reddit_stress_data <- inner_join(train_data, test_data)
 ```
-
+First, I'll start by clearing the punctuation of the text data.
+```{r}
+data(stop_words)
+cleaned_text <- reddit_stress_data %>%
+  select(c(text, id)) %>%
+  # Creating bag of words representation
+  unnest_tokens(word, text) %>%
+  # Removing stopwords
+  anti_join(stop_words, by = c("word" = "word"))
+head(cleaned_text)
+```
+Now I want to 
