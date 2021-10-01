@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # load required packages
 library(tidytext)
 library(tidyverse)
+library(caret)
 source("./text_cleaning.R")
 ```
 Now let's start off by reading in the training and test data.
@@ -18,10 +19,12 @@ test_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
 train_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
 reddit_stress_data <- inner_join(train_data, test_data)
 ```
-First, I'll start by creating a bag of words representation on my data.
+First, I'll start by creating a bag of words representation on my data, marking unknown variables correspondingly.
 ```{r}
-# Creating a bag of words with the model
-my_bow <- CreateBagOfWords(reddit_stress_data)
-head(my_bow, 2)
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data)
 ```
-Now I want to 
+Since we have our bag of words model, let's mutate to represent the proportion of words for that variable.
+```{r}
+
+```
+
