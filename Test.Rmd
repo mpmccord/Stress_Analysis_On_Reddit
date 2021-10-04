@@ -116,9 +116,10 @@ id <- tibble(id)
 X <- tibble(text)
 X <- add_column(X, id)
 df <- X
-rare_words <- GetRareWords(df, rare_defn)
-print("rare_words")
-rare_length <- length(rare_words)
+CleanText(df)
+#rare_words <- GetRareWords(df, rare_defn)
+#rare_words
+# rare_length <- length(rare_words)
 rare_words <- paste(rare_words, collapse = "| ")
 replacement <- "unk"
 words_and_id <- CleanText(df) %>%
