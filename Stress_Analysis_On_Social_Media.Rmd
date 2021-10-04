@@ -11,8 +11,8 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidytext)
 library(tidyverse)
 library(caret)
-source("./text_cleaning.R")
-source("./ml_functions.R")
+source("./create_train_test_split.R")
+source("./create_bag_of_words_model.R")
 ```
 Now let's start off by reading in the training and test data.
 ```{r}
@@ -22,10 +22,15 @@ reddit_stress_data <- inner_join(train_data, test_data)
 ```
 First, I'll start by creating a bag of words representation on my data, marking unknown variables correspondingly.
 ```{r}
-bag_of_words_with_unknowns <- CreateBagOfWords(reddit_stress_data)
-dim(bag_of_words_with_unknowns)
-head(bag_of_words_with_unknowns, 2)
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data)
 ```
+
+```
+Now let's check the other one
+```{r}
+bag_of_words_with_unknowns$id...369
+```
+
 Since we have our bag of words model, let's mutate to represent the proportion of words for that variable.
 ```{r}
 stress_data_with_bow <- reddit_stress_data %>%
