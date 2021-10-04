@@ -1,0 +1,56 @@
+---
+title: "Test"
+author: "Melanie McCord"
+date: "10/4/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(stringr)
+```
+
+# Testing Replace Rare Words
+```{r}
+mytext <- function(df) {
+  temp <- unnest_tokens(pull(df))
+  return(temp)
+  
+}
+
+text <- c(rep("Hermione", 10), rep("id", 1), rep("Granfer tweet", 2), rep("chocolate tweet", 2), rep("why", 2), rep("re", 2))
+id = 1:length(text)
+id <- tibble(id)
+X <- tibble(text)
+X <- add_column(X, id)
+ReplaceRareWords(X, 5)
+```
+Test 2
+```{r}
+ReplaceRareWords <- function(df, rare_defn = 10) {
+  rare_words <- GetRareWords(df, rare_defn)
+  rare_words <- paste(rare_words, collapse = '|')
+  rare_length <- length(rare_words)
+  
+  replacement <- "unk"
+  words_and_id <- CleanText(df) %>%
+    mutate(word = str_replace_all(word, rare_words, replacement = replacement))
+  return (words_and_id)
+}
+```
+
+Test
+```{r}
+GetRareWords(X, 5)
+paste(GetRareWords(X, 5), collapse = '|')
+```
+Now testing again
+```{r}
+ReplaceRareWords(X, 5)
+```
+Now testing creating a word
+```{r}
+CreateBagOfWordsWithUnknowns(X)
+```
+
