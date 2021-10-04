@@ -16,7 +16,7 @@ CleanText <- function(df) {
     unnest_tokens(word, text) %>%
     mutate(word = gsub('[[:punct:]]+','', word)) %>%
     mutate(word = gsub('\\<[[:digit:]]+\\>', '%d%', word)) %>%
-    mutate(word = str_replace_all(word, "^id$", "text_id")) %>%
+    mutate(word = paste("text", word, sep = '_')) %>%
     anti_join(stop_words, by = c("word" = "word"))
   return(temp)
 }
