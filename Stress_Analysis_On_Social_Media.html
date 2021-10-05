@@ -192,20 +192,53 @@ pre code {
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>reddit_stress_data &lt;- inner_join(train_data, test_data)</code></pre>
 <pre><code>## Joining, by = c(&quot;id&quot;, &quot;subreddit&quot;, &quot;post_id&quot;, &quot;sentence_range&quot;, &quot;text&quot;, &quot;label&quot;, &quot;confidence&quot;, &quot;social_timestamp&quot;, &quot;social_karma&quot;, &quot;syntax_ari&quot;, &quot;lex_liwc_WC&quot;, &quot;lex_liwc_Analytic&quot;, &quot;lex_liwc_Clout&quot;, &quot;lex_liwc_Authentic&quot;, &quot;lex_liwc_Tone&quot;, &quot;lex_liwc_WPS&quot;, &quot;lex_liwc_Sixltr&quot;, &quot;lex_liwc_Dic&quot;, &quot;lex_liwc_function&quot;, &quot;lex_liwc_pronoun&quot;, &quot;lex_liwc_ppron&quot;, &quot;lex_liwc_i&quot;, &quot;lex_liwc_we&quot;, &quot;lex_liwc_you&quot;, &quot;lex_liwc_shehe&quot;, &quot;lex_liwc_they&quot;, &quot;lex_liwc_ipron&quot;, &quot;lex_liwc_article&quot;, &quot;lex_liwc_prep&quot;, &quot;lex_liwc_auxverb&quot;, &quot;lex_liwc_adverb&quot;, &quot;lex_liwc_conj&quot;, &quot;lex_liwc_negate&quot;, &quot;lex_liwc_verb&quot;, &quot;lex_liwc_adj&quot;, &quot;lex_liwc_compare&quot;, &quot;lex_liwc_interrog&quot;, &quot;lex_liwc_number&quot;, &quot;lex_liwc_quant&quot;, &quot;lex_liwc_affect&quot;, &quot;lex_liwc_posemo&quot;, &quot;lex_liwc_negemo&quot;, &quot;lex_liwc_anx&quot;, &quot;lex_liwc_anger&quot;, &quot;lex_liwc_sad&quot;, &quot;lex_liwc_social&quot;, &quot;lex_liwc_family&quot;, &quot;lex_liwc_friend&quot;, &quot;lex_liwc_female&quot;, &quot;lex_liwc_male&quot;, &quot;lex_liwc_cogproc&quot;, &quot;lex_liwc_insight&quot;, &quot;lex_liwc_cause&quot;, &quot;lex_liwc_discrep&quot;, &quot;lex_liwc_tentat&quot;, &quot;lex_liwc_certain&quot;, &quot;lex_liwc_differ&quot;, &quot;lex_liwc_percept&quot;, &quot;lex_liwc_see&quot;, &quot;lex_liwc_hear&quot;, &quot;lex_liwc_feel&quot;, &quot;lex_liwc_bio&quot;, &quot;lex_liwc_body&quot;, &quot;lex_liwc_health&quot;, &quot;lex_liwc_sexual&quot;, &quot;lex_liwc_ingest&quot;, &quot;lex_liwc_drives&quot;, &quot;lex_liwc_affiliation&quot;, &quot;lex_liwc_achieve&quot;, &quot;lex_liwc_power&quot;, &quot;lex_liwc_reward&quot;, &quot;lex_liwc_risk&quot;, &quot;lex_liwc_focuspast&quot;, &quot;lex_liwc_focuspresent&quot;, &quot;lex_liwc_focusfuture&quot;, &quot;lex_liwc_relativ&quot;, &quot;lex_liwc_motion&quot;, &quot;lex_liwc_space&quot;, &quot;lex_liwc_time&quot;, &quot;lex_liwc_work&quot;, &quot;lex_liwc_leisure&quot;, &quot;lex_liwc_home&quot;, &quot;lex_liwc_money&quot;, &quot;lex_liwc_relig&quot;, &quot;lex_liwc_death&quot;, &quot;lex_liwc_informal&quot;, &quot;lex_liwc_swear&quot;, &quot;lex_liwc_netspeak&quot;, &quot;lex_liwc_assent&quot;, &quot;lex_liwc_nonflu&quot;, &quot;lex_liwc_filler&quot;, &quot;lex_liwc_AllPunc&quot;, &quot;lex_liwc_Period&quot;, &quot;lex_liwc_Comma&quot;, &quot;lex_liwc_Colon&quot;, &quot;lex_liwc_SemiC&quot;, &quot;lex_liwc_QMark&quot;, &quot;lex_liwc_Exclam&quot;, &quot;lex_liwc_Dash&quot;, &quot;lex_liwc_Quote&quot;, &quot;lex_liwc_Apostro&quot;, &quot;lex_liwc_Parenth&quot;, &quot;lex_liwc_OtherP&quot;, &quot;lex_dal_max_pleasantness&quot;, &quot;lex_dal_max_activation&quot;, &quot;lex_dal_max_imagery&quot;, &quot;lex_dal_min_pleasantness&quot;, &quot;lex_dal_min_activation&quot;, &quot;lex_dal_min_imagery&quot;, &quot;lex_dal_avg_activation&quot;, &quot;lex_dal_avg_imagery&quot;, &quot;lex_dal_avg_pleasantness&quot;, &quot;social_upvote_ratio&quot;, &quot;social_num_comments&quot;, &quot;syntax_fk_grade&quot;, &quot;sentiment&quot;)</code></pre>
-<p>First, I’ll start by creating a bag of words representation on my data. The first bag of words is just a bag of words model, whereas the second marks unknowns and may be more useful.</p>
-<pre class="r"><code># Creating a bag of words with the model
-initial_bag_of_words &lt;- CreateBagOfWords(reddit_stress_data)</code></pre>
-<pre><code>## New names:
-## * id -&gt; id...1
-## * id -&gt; id...376</code></pre>
-<pre class="r"><code>#Creating a bag of words with unknown
-bag_of_words_with_unknowns &lt;- CreateBagOfWordsWithUnknowns(reddit_stress_data)</code></pre>
-<pre><code>## Warning in stri_replace_all_regex(string, pattern,
-## fix_replacement(replacement), : longer object length is not a multiple of
-## shorter object length</code></pre>
-<pre><code>## New names:
-## * id -&gt; id...1
-## * id -&gt; id...376</code></pre>
+<p>First, I’ll start by creating a bag of words representation on my data, marking unknown variables correspondingly.</p>
+<pre class="r"><code>bag_of_words_with_unknowns &lt;- CreateBagOfWordsWithUnknowns(reddit_stress_data)</code></pre>
+<p>Since we have our bag of words model, let’s mutate to represent the proportion of words for that variable.</p>
+<pre class="r"><code>stress_data_with_bow &lt;- reddit_stress_data %&gt;%
+  select(-text) %&gt;%
+  left_join(bag_of_words_with_unknowns, by = &quot;id&quot;)
+head(stress_data_with_bow, 2)</code></pre>
+<pre><code>## # A tibble: 2 x 5,250
+##      id subreddit     post_id sentence_range label confidence social_timestamp
+##   &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;
+## 1   896 relationships 7nu7as  [50, 55]           0        0.8       1514980773
+## 2 19059 anxiety       680i6d  (5, 10)            0        1         1493348050
+## # … with 5,243 more variables: social_karma &lt;dbl&gt;, syntax_ari &lt;dbl&gt;,
+## #   lex_liwc_WC &lt;dbl&gt;, lex_liwc_Analytic &lt;dbl&gt;, lex_liwc_Clout &lt;dbl&gt;,
+## #   lex_liwc_Authentic &lt;dbl&gt;, lex_liwc_Tone &lt;dbl&gt;, lex_liwc_WPS &lt;dbl&gt;,
+## #   lex_liwc_Sixltr &lt;dbl&gt;, lex_liwc_Dic &lt;dbl&gt;, lex_liwc_function &lt;dbl&gt;,
+## #   lex_liwc_pronoun &lt;dbl&gt;, lex_liwc_ppron &lt;dbl&gt;, lex_liwc_i &lt;dbl&gt;,
+## #   lex_liwc_we &lt;dbl&gt;, lex_liwc_you &lt;dbl&gt;, lex_liwc_shehe &lt;dbl&gt;,
+## #   lex_liwc_they &lt;dbl&gt;, lex_liwc_ipron &lt;dbl&gt;, lex_liwc_article &lt;dbl&gt;,
+## #   lex_liwc_prep &lt;dbl&gt;, lex_liwc_auxverb &lt;dbl&gt;, lex_liwc_adverb &lt;dbl&gt;,
+## #   lex_liwc_conj &lt;dbl&gt;, lex_liwc_negate &lt;dbl&gt;, lex_liwc_verb &lt;dbl&gt;,
+## #   lex_liwc_adj &lt;dbl&gt;, lex_liwc_compare &lt;dbl&gt;, lex_liwc_interrog &lt;dbl&gt;,
+## #   lex_liwc_number &lt;dbl&gt;, lex_liwc_quant &lt;dbl&gt;, lex_liwc_affect &lt;dbl&gt;,
+## #   lex_liwc_posemo &lt;dbl&gt;, lex_liwc_negemo &lt;dbl&gt;, lex_liwc_anx &lt;dbl&gt;,
+## #   lex_liwc_anger &lt;dbl&gt;, lex_liwc_sad &lt;dbl&gt;, lex_liwc_social &lt;dbl&gt;,
+## #   lex_liwc_family &lt;dbl&gt;, lex_liwc_friend &lt;dbl&gt;, lex_liwc_female &lt;dbl&gt;,
+## #   lex_liwc_male &lt;dbl&gt;, lex_liwc_cogproc &lt;dbl&gt;, lex_liwc_insight &lt;dbl&gt;,
+## #   lex_liwc_cause &lt;dbl&gt;, lex_liwc_discrep &lt;dbl&gt;, lex_liwc_tentat &lt;dbl&gt;,
+## #   lex_liwc_certain &lt;dbl&gt;, lex_liwc_differ &lt;dbl&gt;, lex_liwc_percept &lt;dbl&gt;,
+## #   lex_liwc_see &lt;dbl&gt;, lex_liwc_hear &lt;dbl&gt;, lex_liwc_feel &lt;dbl&gt;,
+## #   lex_liwc_bio &lt;dbl&gt;, lex_liwc_body &lt;dbl&gt;, lex_liwc_health &lt;dbl&gt;,
+## #   lex_liwc_sexual &lt;dbl&gt;, lex_liwc_ingest &lt;dbl&gt;, lex_liwc_drives &lt;dbl&gt;,
+## #   lex_liwc_affiliation &lt;dbl&gt;, lex_liwc_achieve &lt;dbl&gt;, lex_liwc_power &lt;dbl&gt;,
+## #   lex_liwc_reward &lt;dbl&gt;, lex_liwc_risk &lt;dbl&gt;, lex_liwc_focuspast &lt;dbl&gt;,
+## #   lex_liwc_focuspresent &lt;dbl&gt;, lex_liwc_focusfuture &lt;dbl&gt;,
+## #   lex_liwc_relativ &lt;dbl&gt;, lex_liwc_motion &lt;dbl&gt;, lex_liwc_space &lt;dbl&gt;,
+## #   lex_liwc_time &lt;dbl&gt;, lex_liwc_work &lt;dbl&gt;, lex_liwc_leisure &lt;dbl&gt;,
+## #   lex_liwc_home &lt;dbl&gt;, lex_liwc_money &lt;dbl&gt;, lex_liwc_relig &lt;dbl&gt;,
+## #   lex_liwc_death &lt;dbl&gt;, lex_liwc_informal &lt;dbl&gt;, lex_liwc_swear &lt;dbl&gt;,
+## #   lex_liwc_netspeak &lt;dbl&gt;, lex_liwc_assent &lt;dbl&gt;, lex_liwc_nonflu &lt;dbl&gt;,
+## #   lex_liwc_filler &lt;dbl&gt;, lex_liwc_AllPunc &lt;dbl&gt;, lex_liwc_Period &lt;dbl&gt;,
+## #   lex_liwc_Comma &lt;dbl&gt;, lex_liwc_Colon &lt;dbl&gt;, lex_liwc_SemiC &lt;dbl&gt;,
+## #   lex_liwc_QMark &lt;dbl&gt;, lex_liwc_Exclam &lt;dbl&gt;, lex_liwc_Dash &lt;dbl&gt;,
+## #   lex_liwc_Quote &lt;dbl&gt;, lex_liwc_Apostro &lt;dbl&gt;, lex_liwc_Parenth &lt;dbl&gt;,
+## #   lex_liwc_OtherP &lt;dbl&gt;, lex_dal_max_pleasantness &lt;dbl&gt;,
+## #   lex_dal_max_activation &lt;dbl&gt;, lex_dal_max_imagery &lt;dbl&gt;,
+## #   lex_dal_min_pleasantness &lt;dbl&gt;, lex_dal_min_activation &lt;dbl&gt;, …</code></pre>
 
 
 
