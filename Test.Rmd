@@ -70,4 +70,9 @@ RemoveHighlyCorrelatedFeatures <- function(df, label_col, cutoff = 0.7) {
 }
 RemoveHighlyCorrelatedFeatures(iris, "Species", 0.7)
 ```
+Now verifying that it does what it says it does.
+```{r}
+test <- RemoveHighlyCorrelatedFeatures(iris, "Species", 0.7)
+GetCorrelation(test, "Species")
+```
 
