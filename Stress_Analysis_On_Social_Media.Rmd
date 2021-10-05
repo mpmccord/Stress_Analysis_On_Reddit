@@ -12,8 +12,12 @@ library(tidytext)
 library(tidyverse)
 library(caret)
 library(stringr)
-source("./train_test_split.R")
-source("./create_bag_of_words_model.R")
+source("./model_training_functions/train_test_split.R")
+source("./feature_creation_functions/create_bag_of_words_model.R")
+source("./feature_creation_functions/create_sentiment_model.R")
+source("./data_visualization_functions/plot_frequency_distribution.R")
+source("./feature_selection_functions/feature_selection.R")
+
 ```
 Now let's start off by reading in the training and test data.
 ```{r}
