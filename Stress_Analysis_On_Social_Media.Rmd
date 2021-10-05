@@ -37,4 +37,14 @@ stress_data_with_bow <- reddit_stress_data %>%
   left_join(bag_of_words_with_unknowns, by = "id")
 head(stress_data_with_bow, 2)
 ```
+Now removing the correlated features:
+```{r}
+label <- reddit_stress_data$label
+text_features <- bag_of_words_with_unknowns
+small_bag_of_words <- RemoveHighlyCorrelatedFeatures(text_features, "id", 0.5)
+```
+Now let's display the features
+```{r}
+head(small_bag_of_words, 2)
+```
 
