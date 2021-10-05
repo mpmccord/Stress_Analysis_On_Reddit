@@ -153,4 +153,9 @@ Now testing creating a word
 ```{r}
 CreateBagOfWordsWithUnknowns(X)
 ```
+Now testing removing features from dataset
+```{r}
+library(caret)
+
+```
 
