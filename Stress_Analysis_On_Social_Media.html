@@ -239,6 +239,51 @@ head(stress_data_with_bow, 2)</code></pre>
 ## #   lex_liwc_OtherP &lt;dbl&gt;, lex_dal_max_pleasantness &lt;dbl&gt;,
 ## #   lex_dal_max_activation &lt;dbl&gt;, lex_dal_max_imagery &lt;dbl&gt;,
 ## #   lex_dal_min_pleasantness &lt;dbl&gt;, lex_dal_min_activation &lt;dbl&gt;, …</code></pre>
+<p>Now removing the correlated features:</p>
+<pre class="r"><code>label &lt;- reddit_stress_data$label
+text_features &lt;- bag_of_words_with_unknowns
+small_bag_of_words &lt;- RemoveHighlyCorrelatedFeatures(text_features, &quot;id&quot;, 0.5)</code></pre>
+<pre><code>## Note: Using an external vector in selections is ambiguous.
+## ℹ Use `all_of(label_col)` instead of `label_col` to silence this message.
+## ℹ See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.
+## This message is displayed once per session.</code></pre>
+<p>Now let’s display the features</p>
+<pre class="r"><code>head(small_bag_of_words, 2)</code></pre>
+<pre><code>## # A tibble: 2 x 1,368
+##   `text_%d%` text_cancel text_constantly text_diagnosed text_dont text_dying
+##        &lt;dbl&gt;       &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+## 1          1           1               1              1         1          1
+## 2          0           0               0              0         0          0
+## # … with 1,362 more variables: text_empathy &lt;dbl&gt;, text_fear &lt;dbl&gt;,
+## #   text_feel &lt;dbl&gt;, text_friend &lt;dbl&gt;, text_friends &lt;dbl&gt;, text_hear &lt;dbl&gt;,
+## #   text_heard &lt;dbl&gt;, text_passed &lt;dbl&gt;, text_plans &lt;dbl&gt;, text_recently &lt;dbl&gt;,
+## #   text_sympathy &lt;dbl&gt;, text_terrified &lt;dbl&gt;, text_active &lt;dbl&gt;,
+## #   text_afraid &lt;dbl&gt;, text_anxiety &lt;dbl&gt;, text_beat &lt;dbl&gt;, text_close &lt;dbl&gt;,
+## #   text_exercise &lt;dbl&gt;, text_fast &lt;dbl&gt;, text_finding &lt;dbl&gt;,
+## #   text_helped &lt;dbl&gt;, text_increased &lt;dbl&gt;, text_mind &lt;dbl&gt;,
+## #   text_multiple &lt;dbl&gt;, text_naturally &lt;dbl&gt;, text_past &lt;dbl&gt;, text_run &lt;dbl&gt;,
+## #   text_stand &lt;dbl&gt;, text_start &lt;dbl&gt;, text_taking &lt;dbl&gt;, text_walks &lt;dbl&gt;,
+## #   text_weeks &lt;dbl&gt;, text_angry &lt;dbl&gt;, text_care &lt;dbl&gt;, text_happened &lt;dbl&gt;,
+## #   text_kill &lt;dbl&gt;, text_manipulated &lt;dbl&gt;, text_relationship &lt;dbl&gt;,
+## #   text_stay &lt;dbl&gt;, text_telling &lt;dbl&gt;, text_time &lt;dbl&gt;, text_times &lt;dbl&gt;,
+## #   text_unhappy &lt;dbl&gt;, text_abusive &lt;dbl&gt;, text_advice &lt;dbl&gt;,
+## #   text_assault &lt;dbl&gt;, text_attacks &lt;dbl&gt;, text_depression &lt;dbl&gt;,
+## #   text_greatly &lt;dbl&gt;, text_issues &lt;dbl&gt;, text_learn &lt;dbl&gt;, text_manage &lt;dbl&gt;,
+## #   text_mediate &lt;dbl&gt;, text_ptsd &lt;dbl&gt;, text_related &lt;dbl&gt;,
+## #   text_suggestions &lt;dbl&gt;, text_therapist &lt;dbl&gt;, text_traumatic &lt;dbl&gt;,
+## #   text_call &lt;dbl&gt;, text_car &lt;dbl&gt;, text_dark &lt;dbl&gt;, text_edge &lt;dbl&gt;,
+## #   text_feet &lt;dbl&gt;, text_flashlight &lt;dbl&gt;, text_im &lt;dbl&gt;, text_ive &lt;dbl&gt;,
+## #   text_live &lt;dbl&gt;, text_lot &lt;dbl&gt;, text_months &lt;dbl&gt;, text_night &lt;dbl&gt;,
+## #   text_prior &lt;dbl&gt;, text_public &lt;dbl&gt;, text_sleeping &lt;dbl&gt;, text_spot &lt;dbl&gt;,
+## #   text_staying &lt;dbl&gt;, text_week &lt;dbl&gt;, text_answers &lt;dbl&gt;,
+## #   text_political &lt;dbl&gt;, text_survey &lt;dbl&gt;, text_top &lt;dbl&gt;, text_half &lt;dbl&gt;,
+## #   text_lack &lt;dbl&gt;, text_overreacting &lt;dbl&gt;, text_trust &lt;dbl&gt;,
+## #   text_trusts &lt;dbl&gt;, text_control &lt;dbl&gt;, text_emotional &lt;dbl&gt;,
+## #   text_lucky &lt;dbl&gt;, text_ounce &lt;dbl&gt;, text_strategies &lt;dbl&gt;,
+## #   text_suddenly &lt;dbl&gt;, text_worried &lt;dbl&gt;, text_boyfriend &lt;dbl&gt;,
+## #   text_dead &lt;dbl&gt;, text_drink &lt;dbl&gt;, text_ns &lt;dbl&gt;, text_party &lt;dbl&gt;,
+## #   text_wonderful &lt;dbl&gt;, text_ago &lt;dbl&gt;, text_drag &lt;dbl&gt;, …</code></pre>
+<p>The correlation matrix is calculated like this: <span class="math inline">\(\frac{\sum{(X_i - \bar{x})(y_i - \bar{y})}}{\sqrt{(X_i = \bar{x})^2(Y_i - \bar{y})}}\)</span></p>
 
 
 
