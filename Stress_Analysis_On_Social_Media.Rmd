@@ -21,9 +21,9 @@ source("./feature_selection_functions/remove_overly_correlated_features.R")
 ```
 Now let's start off by reading in the training and test data.
 ```{r}
-test_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
-train_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
-reddit_stress_data <- inner_join(train_data, test_data)
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
+train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
+reddit_stress_data <- add_row(train_data, test_data)
 ```
 First, I'll start by creating a bag of words representation on my data, marking unknown variables correspondingly.
 ```{r}
