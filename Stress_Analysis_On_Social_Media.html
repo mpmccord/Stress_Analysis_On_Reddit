@@ -172,26 +172,9 @@ pre code {
 
 
 <p>Now let’s start off by reading in the training and test data.</p>
-<pre class="r"><code>test_data &lt;- read_csv(&quot;reddit_stress_data/dreaddit-test.csv&quot;)</code></pre>
-<pre><code>## Rows: 715 Columns: 116</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr   (4): subreddit, post_id, sentence_range, text
-## dbl (112): id, label, confidence, social_timestamp, social_karma, syntax_ari...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>train_data &lt;- read_csv(&quot;reddit_stress_data/dreaddit-test.csv&quot;)</code></pre>
-<pre><code>## Rows: 715 Columns: 116</code></pre>
-<pre><code>## ── Column specification ────────────────────────────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr   (4): subreddit, post_id, sentence_range, text
-## dbl (112): id, label, confidence, social_timestamp, social_karma, syntax_ari...</code></pre>
-<pre><code>## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>reddit_stress_data &lt;- inner_join(train_data, test_data)</code></pre>
-<pre><code>## Joining, by = c(&quot;id&quot;, &quot;subreddit&quot;, &quot;post_id&quot;, &quot;sentence_range&quot;, &quot;text&quot;, &quot;label&quot;, &quot;confidence&quot;, &quot;social_timestamp&quot;, &quot;social_karma&quot;, &quot;syntax_ari&quot;, &quot;lex_liwc_WC&quot;, &quot;lex_liwc_Analytic&quot;, &quot;lex_liwc_Clout&quot;, &quot;lex_liwc_Authentic&quot;, &quot;lex_liwc_Tone&quot;, &quot;lex_liwc_WPS&quot;, &quot;lex_liwc_Sixltr&quot;, &quot;lex_liwc_Dic&quot;, &quot;lex_liwc_function&quot;, &quot;lex_liwc_pronoun&quot;, &quot;lex_liwc_ppron&quot;, &quot;lex_liwc_i&quot;, &quot;lex_liwc_we&quot;, &quot;lex_liwc_you&quot;, &quot;lex_liwc_shehe&quot;, &quot;lex_liwc_they&quot;, &quot;lex_liwc_ipron&quot;, &quot;lex_liwc_article&quot;, &quot;lex_liwc_prep&quot;, &quot;lex_liwc_auxverb&quot;, &quot;lex_liwc_adverb&quot;, &quot;lex_liwc_conj&quot;, &quot;lex_liwc_negate&quot;, &quot;lex_liwc_verb&quot;, &quot;lex_liwc_adj&quot;, &quot;lex_liwc_compare&quot;, &quot;lex_liwc_interrog&quot;, &quot;lex_liwc_number&quot;, &quot;lex_liwc_quant&quot;, &quot;lex_liwc_affect&quot;, &quot;lex_liwc_posemo&quot;, &quot;lex_liwc_negemo&quot;, &quot;lex_liwc_anx&quot;, &quot;lex_liwc_anger&quot;, &quot;lex_liwc_sad&quot;, &quot;lex_liwc_social&quot;, &quot;lex_liwc_family&quot;, &quot;lex_liwc_friend&quot;, &quot;lex_liwc_female&quot;, &quot;lex_liwc_male&quot;, &quot;lex_liwc_cogproc&quot;, &quot;lex_liwc_insight&quot;, &quot;lex_liwc_cause&quot;, &quot;lex_liwc_discrep&quot;, &quot;lex_liwc_tentat&quot;, &quot;lex_liwc_certain&quot;, &quot;lex_liwc_differ&quot;, &quot;lex_liwc_percept&quot;, &quot;lex_liwc_see&quot;, &quot;lex_liwc_hear&quot;, &quot;lex_liwc_feel&quot;, &quot;lex_liwc_bio&quot;, &quot;lex_liwc_body&quot;, &quot;lex_liwc_health&quot;, &quot;lex_liwc_sexual&quot;, &quot;lex_liwc_ingest&quot;, &quot;lex_liwc_drives&quot;, &quot;lex_liwc_affiliation&quot;, &quot;lex_liwc_achieve&quot;, &quot;lex_liwc_power&quot;, &quot;lex_liwc_reward&quot;, &quot;lex_liwc_risk&quot;, &quot;lex_liwc_focuspast&quot;, &quot;lex_liwc_focuspresent&quot;, &quot;lex_liwc_focusfuture&quot;, &quot;lex_liwc_relativ&quot;, &quot;lex_liwc_motion&quot;, &quot;lex_liwc_space&quot;, &quot;lex_liwc_time&quot;, &quot;lex_liwc_work&quot;, &quot;lex_liwc_leisure&quot;, &quot;lex_liwc_home&quot;, &quot;lex_liwc_money&quot;, &quot;lex_liwc_relig&quot;, &quot;lex_liwc_death&quot;, &quot;lex_liwc_informal&quot;, &quot;lex_liwc_swear&quot;, &quot;lex_liwc_netspeak&quot;, &quot;lex_liwc_assent&quot;, &quot;lex_liwc_nonflu&quot;, &quot;lex_liwc_filler&quot;, &quot;lex_liwc_AllPunc&quot;, &quot;lex_liwc_Period&quot;, &quot;lex_liwc_Comma&quot;, &quot;lex_liwc_Colon&quot;, &quot;lex_liwc_SemiC&quot;, &quot;lex_liwc_QMark&quot;, &quot;lex_liwc_Exclam&quot;, &quot;lex_liwc_Dash&quot;, &quot;lex_liwc_Quote&quot;, &quot;lex_liwc_Apostro&quot;, &quot;lex_liwc_Parenth&quot;, &quot;lex_liwc_OtherP&quot;, &quot;lex_dal_max_pleasantness&quot;, &quot;lex_dal_max_activation&quot;, &quot;lex_dal_max_imagery&quot;, &quot;lex_dal_min_pleasantness&quot;, &quot;lex_dal_min_activation&quot;, &quot;lex_dal_min_imagery&quot;, &quot;lex_dal_avg_activation&quot;, &quot;lex_dal_avg_imagery&quot;, &quot;lex_dal_avg_pleasantness&quot;, &quot;social_upvote_ratio&quot;, &quot;social_num_comments&quot;, &quot;syntax_fk_grade&quot;, &quot;sentiment&quot;)</code></pre>
+<pre class="r"><code>test_data &lt;- read_csv(&quot;reddit_stress_data/dreaddit-test.csv&quot;, show_col_types = FALSE)
+train_data &lt;- read_csv(&quot;reddit_stress_data/dreaddit-train.csv&quot;, show_col_types = FALSE)
+reddit_stress_data &lt;- add_row(train_data, test_data)</code></pre>
 <p>First, I’ll start by creating a bag of words representation on my data, marking unknown variables correspondingly.</p>
 <pre class="r"><code>bag_of_words_with_unknowns &lt;- CreateBagOfWordsWithUnknowns(reddit_stress_data)</code></pre>
 <p>Since we have our bag of words model, let’s mutate to represent the proportion of words for that variable.</p>
@@ -199,12 +182,12 @@ pre code {
   select(-text) %&gt;%
   left_join(bag_of_words_with_unknowns, by = &quot;id&quot;)
 head(stress_data_with_bow, 2)</code></pre>
-<pre><code>## # A tibble: 2 x 5,250
-##      id subreddit     post_id sentence_range label confidence social_timestamp
-##   &lt;dbl&gt; &lt;chr&gt;         &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;
-## 1   896 relationships 7nu7as  [50, 55]           0        0.8       1514980773
-## 2 19059 anxiety       680i6d  (5, 10)            0        1         1493348050
-## # … with 5,243 more variables: social_karma &lt;dbl&gt;, syntax_ari &lt;dbl&gt;,
+<pre><code>## # A tibble: 2 x 12,174
+##   subreddit  post_id sentence_range    id label confidence social_timestamp
+##   &lt;chr&gt;      &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;            &lt;dbl&gt;
+## 1 ptsd       8601tu  (15, 20)       33181     1        0.8       1521614353
+## 2 assistance 8lbrx9  (0, 5)          2606     0        1         1527009817
+## # … with 12,167 more variables: social_karma &lt;dbl&gt;, syntax_ari &lt;dbl&gt;,
 ## #   lex_liwc_WC &lt;dbl&gt;, lex_liwc_Analytic &lt;dbl&gt;, lex_liwc_Clout &lt;dbl&gt;,
 ## #   lex_liwc_Authentic &lt;dbl&gt;, lex_liwc_Tone &lt;dbl&gt;, lex_liwc_WPS &lt;dbl&gt;,
 ## #   lex_liwc_Sixltr &lt;dbl&gt;, lex_liwc_Dic &lt;dbl&gt;, lex_liwc_function &lt;dbl&gt;,
@@ -249,40 +232,41 @@ small_bag_of_words &lt;- RemoveHighlyCorrelatedFeatures(text_features, &quot;id&
 ## This message is displayed once per session.</code></pre>
 <p>Now let’s display the features</p>
 <pre class="r"><code>head(small_bag_of_words, 2)</code></pre>
-<pre><code>## # A tibble: 2 x 1,368
-##   `text_%d%` text_cancel text_constantly text_diagnosed text_dont text_dying
-##        &lt;dbl&gt;       &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
-## 1          1           1               1              1         1          1
-## 2          0           0               0              0         0          0
-## # … with 1,362 more variables: text_empathy &lt;dbl&gt;, text_fear &lt;dbl&gt;,
-## #   text_feel &lt;dbl&gt;, text_friend &lt;dbl&gt;, text_friends &lt;dbl&gt;, text_hear &lt;dbl&gt;,
-## #   text_heard &lt;dbl&gt;, text_passed &lt;dbl&gt;, text_plans &lt;dbl&gt;, text_recently &lt;dbl&gt;,
-## #   text_sympathy &lt;dbl&gt;, text_terrified &lt;dbl&gt;, text_active &lt;dbl&gt;,
-## #   text_afraid &lt;dbl&gt;, text_anxiety &lt;dbl&gt;, text_beat &lt;dbl&gt;, text_close &lt;dbl&gt;,
-## #   text_exercise &lt;dbl&gt;, text_fast &lt;dbl&gt;, text_finding &lt;dbl&gt;,
-## #   text_helped &lt;dbl&gt;, text_increased &lt;dbl&gt;, text_mind &lt;dbl&gt;,
-## #   text_multiple &lt;dbl&gt;, text_naturally &lt;dbl&gt;, text_past &lt;dbl&gt;, text_run &lt;dbl&gt;,
-## #   text_stand &lt;dbl&gt;, text_start &lt;dbl&gt;, text_taking &lt;dbl&gt;, text_walks &lt;dbl&gt;,
-## #   text_weeks &lt;dbl&gt;, text_angry &lt;dbl&gt;, text_care &lt;dbl&gt;, text_happened &lt;dbl&gt;,
-## #   text_kill &lt;dbl&gt;, text_manipulated &lt;dbl&gt;, text_relationship &lt;dbl&gt;,
-## #   text_stay &lt;dbl&gt;, text_telling &lt;dbl&gt;, text_time &lt;dbl&gt;, text_times &lt;dbl&gt;,
-## #   text_unhappy &lt;dbl&gt;, text_abusive &lt;dbl&gt;, text_advice &lt;dbl&gt;,
-## #   text_assault &lt;dbl&gt;, text_attacks &lt;dbl&gt;, text_depression &lt;dbl&gt;,
-## #   text_greatly &lt;dbl&gt;, text_issues &lt;dbl&gt;, text_learn &lt;dbl&gt;, text_manage &lt;dbl&gt;,
-## #   text_mediate &lt;dbl&gt;, text_ptsd &lt;dbl&gt;, text_related &lt;dbl&gt;,
-## #   text_suggestions &lt;dbl&gt;, text_therapist &lt;dbl&gt;, text_traumatic &lt;dbl&gt;,
-## #   text_call &lt;dbl&gt;, text_car &lt;dbl&gt;, text_dark &lt;dbl&gt;, text_edge &lt;dbl&gt;,
-## #   text_feet &lt;dbl&gt;, text_flashlight &lt;dbl&gt;, text_im &lt;dbl&gt;, text_ive &lt;dbl&gt;,
-## #   text_live &lt;dbl&gt;, text_lot &lt;dbl&gt;, text_months &lt;dbl&gt;, text_night &lt;dbl&gt;,
-## #   text_prior &lt;dbl&gt;, text_public &lt;dbl&gt;, text_sleeping &lt;dbl&gt;, text_spot &lt;dbl&gt;,
-## #   text_staying &lt;dbl&gt;, text_week &lt;dbl&gt;, text_answers &lt;dbl&gt;,
-## #   text_political &lt;dbl&gt;, text_survey &lt;dbl&gt;, text_top &lt;dbl&gt;, text_half &lt;dbl&gt;,
-## #   text_lack &lt;dbl&gt;, text_overreacting &lt;dbl&gt;, text_trust &lt;dbl&gt;,
-## #   text_trusts &lt;dbl&gt;, text_control &lt;dbl&gt;, text_emotional &lt;dbl&gt;,
-## #   text_lucky &lt;dbl&gt;, text_ounce &lt;dbl&gt;, text_strategies &lt;dbl&gt;,
-## #   text_suddenly &lt;dbl&gt;, text_worried &lt;dbl&gt;, text_boyfriend &lt;dbl&gt;,
-## #   text_dead &lt;dbl&gt;, text_drink &lt;dbl&gt;, text_ns &lt;dbl&gt;, text_party &lt;dbl&gt;,
-## #   text_wonderful &lt;dbl&gt;, text_ago &lt;dbl&gt;, text_drag &lt;dbl&gt;, …</code></pre>
+<pre><code>## # A tibble: 2 x 5,337
+##   `text_%d%` text_breast text_cancel text_constantly text_diagnosed text_dont
+##        &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;           &lt;dbl&gt;          &lt;dbl&gt;     &lt;dbl&gt;
+## 1          1           1           1               1              1         1
+## 2          0           0           0               0              0         0
+## # … with 5,331 more variables: text_dying &lt;dbl&gt;, text_empathy &lt;dbl&gt;,
+## #   text_fear &lt;dbl&gt;, text_feel &lt;dbl&gt;, text_friend &lt;dbl&gt;, text_friends &lt;dbl&gt;,
+## #   text_hear &lt;dbl&gt;, text_heard &lt;dbl&gt;, text_passed &lt;dbl&gt;, text_plans &lt;dbl&gt;,
+## #   text_recently &lt;dbl&gt;, text_sympathy &lt;dbl&gt;, text_terrified &lt;dbl&gt;,
+## #   text_ugh &lt;dbl&gt;, text_admit &lt;dbl&gt;, text_anonymously &lt;dbl&gt;, text_care &lt;dbl&gt;,
+## #   text_claim &lt;dbl&gt;, text_couldnt &lt;dbl&gt;, text_desperate &lt;dbl&gt;,
+## #   text_family &lt;dbl&gt;, text_hard &lt;dbl&gt;, text_hate &lt;dbl&gt;, text_home &lt;dbl&gt;,
+## #   text_people &lt;dbl&gt;, text_pos &lt;dbl&gt;, text_posted &lt;dbl&gt;,
+## #   text_relationships &lt;dbl&gt;, text_require &lt;dbl&gt;, text_selfish &lt;dbl&gt;,
+## #   text_share &lt;dbl&gt;, text_spent &lt;dbl&gt;, text_stable &lt;dbl&gt;, text_support &lt;dbl&gt;,
+## #   text_time &lt;dbl&gt;, text_youre &lt;dbl&gt;, text_basically &lt;dbl&gt;, text_blames &lt;dbl&gt;,
+## #   text_creating &lt;dbl&gt;, text_due &lt;dbl&gt;, text_explained &lt;dbl&gt;,
+## #   text_front &lt;dbl&gt;, text_hand &lt;dbl&gt;, text_helpless &lt;dbl&gt;,
+## #   text_listening &lt;dbl&gt;, text_mother &lt;dbl&gt;, text_nice &lt;dbl&gt;,
+## #   text_opportunity &lt;dbl&gt;, text_relieve &lt;dbl&gt;, text_separately &lt;dbl&gt;,
+## #   text_someplace &lt;dbl&gt;, text_tells &lt;dbl&gt;, text_understand &lt;dbl&gt;,
+## #   text_wear &lt;dbl&gt;, text_begging &lt;dbl&gt;, text_buy &lt;dbl&gt;, text_city &lt;dbl&gt;,
+## #   text_cover &lt;dbl&gt;, text_current &lt;dbl&gt;, text_grandfather &lt;dbl&gt;,
+## #   text_hour &lt;dbl&gt;, text_lot &lt;dbl&gt;, text_nbsp &lt;dbl&gt;, text_road &lt;dbl&gt;,
+## #   text_travel &lt;dbl&gt;, text_lady &lt;dbl&gt;, text_luck &lt;dbl&gt;, text_reads &lt;dbl&gt;,
+## #   text_vent &lt;dbl&gt;, text_yoga &lt;dbl&gt;, text_bothering &lt;dbl&gt;, text_bully &lt;dbl&gt;,
+## #   text_fast &lt;dbl&gt;, text_forward &lt;dbl&gt;, text_grades &lt;dbl&gt;, text_months &lt;dbl&gt;,
+## #   text_questions &lt;dbl&gt;, text_school &lt;dbl&gt;, text_slip &lt;dbl&gt;,
+## #   text_started &lt;dbl&gt;, text_actual &lt;dbl&gt;, text_brought &lt;dbl&gt;, text_call &lt;dbl&gt;,
+## #   text_contacted &lt;dbl&gt;, text_documents &lt;dbl&gt;, text_dozen &lt;dbl&gt;,
+## #   text_finally &lt;dbl&gt;, text_forged &lt;dbl&gt;, text_hadnt &lt;dbl&gt;, text_half &lt;dbl&gt;,
+## #   text_id &lt;dbl&gt;, text_innocence &lt;dbl&gt;, text_offered &lt;dbl&gt;,
+## #   text_protection &lt;dbl&gt;, text_prove &lt;dbl&gt;, text_provided &lt;dbl&gt;,
+## #   text_records &lt;dbl&gt;, text_requested &lt;dbl&gt;, text_taking &lt;dbl&gt;,
+## #   text_worry &lt;dbl&gt;, …</code></pre>
 <p>The correlation matrix is calculated like this: <span class="math inline">\(\frac{\sum{(X_i - \bar{x})(y_i - \bar{y})}}{\sqrt{(X_i = \bar{x})^2(Y_i - \bar{y})}}\)</span></p>
 
 
