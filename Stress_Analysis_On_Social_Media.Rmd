@@ -28,7 +28,7 @@ reddit_stress_data <- add_row(train_data, test_data)
 ```
 First, I'll start by creating a bag of words representation on my data, marking unknown variables correspondingly.
 ```{r}
-bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data)
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 20)
 ```
 
 Since we have our bag of words model, let's mutate to represent the proportion of words for that variable.
@@ -48,4 +48,4 @@ Now let's display the features
 ```{r}
 head(small_bag_of_words, 2)
 ```
-The correlation matrix is calculated like this: $\frac{\sum{(X_i - \bar{x})(y_i - \bar{y})}}{\sqrt{(X_i = \bar{x})^2(Y_i - \bar{y})}}$
+

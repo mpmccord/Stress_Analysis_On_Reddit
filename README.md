@@ -16,3 +16,6 @@ _ __Stress_Analysis_On_Social_Media.Rmd__: RMarkdown file that runs the function
 - __model_training_functions__:
   - train_test_split.R: partition the data randomly into train and test.
 
+## To run this code: 
+Download this project and open it in RStudio
+Run Knit on the document to compile it into an HTML document.
