@@ -157,8 +157,18 @@ control2
 ```
 Now testing training and test splitting data
 ```{r}
+df <- RecodeNumericalVariables(df = data, cat_vars = c("sex", "cp", "fbs", "restecg", "exang", "slope", "thal", "target"))
 X <- select(data, -target)
 y <- data$target
 train_test_split <- CreateTrainTestSplit(X, y)
+x_train <- tibble(train_test_split$x_train)
+y_train <- as.matrix(train_test_split$y_train)
+
+x_test <- tibble(train_test_split$x_test)
+y_test <- as.matrix(train_test_split$y_test)
+```
+
+```{r}
+RunRFE(x_train, y_train)
 ```
 

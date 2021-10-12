@@ -13,7 +13,7 @@ CreateTrainTestSplit <- function(x, y, size = 0.8, seed = 123) {
   
   y_train <- y[ inTrain]
   y_test  <- y[-inTrain]
-  partitioned_data <- list(x_train, y_train, x_test, y_test)
+  partitioned_data <- list(tibble(x_train), tibble(y_train), tibble(x_test), tibble(y_test))
   names(partitioned_data) <- c("x_train", "y_train", "x_test", "y_test")
   return (partitioned_data)
 

@@ -4,13 +4,17 @@ library(faux)
 library(DataExplorer)
 library(tidyverse)
 source("model_training_functions/train_test_split.R")
+
 # Function for converting categorical/non-scaled variables and recoding them
 # @param: df: a dataframe
 # @param cat_vars: the categorical variables not to scale
 # @return: a dataframe with the numeric features scaled
 RecodeNumericalVariables <- function(df, cat_vars) {
   df <- df %>%
-    mutate_at(cat_vars, as.factor) %>%
+    # Save categorical features as factors
+    mutate_at(cat_vars, 
+              as.factor) %>%
+    # Center and scale numeric features
     mutate_if(is.numeric, scale)
   return (df)
 }
@@ -28,4 +32,17 @@ CreateRFEControl <- function(my_method = "repeatedcv", num_repeats = 5, num_fold
   return (control)
 }
 
+
+
+# Runs RFE Control on the model; by default, creates a new rfe control object.
+# @param x_train: training features data
+# @param y_train: target features
+# @param rfeControl: rfe control object (by default: will be created)
+# @return: results of rfe
+RunRFE <- function(x_train, y_train, rfeControl = CreateRFEControl(), max_size=13) {
+  return (rfe(x = x_train, 
+             y = y_train, 
+             sizes = c(1:max_size), 
+             rfeControl = control))
+} 
 
