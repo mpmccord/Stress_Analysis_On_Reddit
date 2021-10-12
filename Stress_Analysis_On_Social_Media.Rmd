@@ -42,7 +42,7 @@ Now removing the correlated features:
 ```{r}
 label <- reddit_stress_data$label
 text_features <- bag_of_words_with_unknowns
-small_bag_of_words <- RemoveHighlyCorrelatedFeatures(text_features, "id", 0.5)
+small_bag_of_words <- RemoveHighlyCorrelatedFeatures(text_features, "id", 0.7)
 ```
 Now let's display the features
 ```{r}

@@ -1,17 +1,19 @@
 # Randomly samples the data into a training and test set.
-# Parameters: my_data:dataframe or tibble
-#             size: size of training data, 
-#             train: whether the data is training or testing data
-# Returns:    a vector of the training and test data
-CreateTrainTestSplit <- function(my_data, size = 0.8, seed = 123) {
-  ## 75% of the sample size
-  smp_size <- floor(size * nrow(my_data))
+# @param x: a dataframe without the target variable
+# @param y: the target variable
+# @param size: the size of the variable
+# @param seed: the seed to generate the random variable
+# @return: a list of 4 values: training (x, y), test (x, y)
+CreateTrainTestSplit <- function(x, y, size = 0.8, seed = 123) {
+  inTrain <- createDataPartition(y, p = size, list = FALSE)[,1]
   
-  ## set the seed to make your partition reproducible
-  set.seed(seed)
-  train_ind <- sample(seq_len(nrow(my_data)), size = smp_size)
+  x_train <- x[ inTrain, ]
+  x_test  <- x[-inTrain, ]
   
-  train_data <- my_data[train_ind, ]
-  test_data <- my_data[-train_ind, ]
-  return (c(train_data, test_data))
+  y_train <- y[ inTrain]
+  y_test  <- y[-inTrain]
+  my_list <- list(x_train, y_train, x_test, y_test)
+  names(my_list) <- c("x_train", "y_train", "x_test", "y_test")
+  return (my_list)
+
 }

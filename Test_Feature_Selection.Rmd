@@ -1,0 +1,164 @@
+---
+title: "Test_Feature_Selection"
+author: "Melanie McCord"
+date: "10/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(caret)
+library(randomForest)
+library(faux)
+library(DataExplorer)
+library(tidyverse)
+library(mlbench)
+source("./feature_selection_functions/remove_overly_correlated_features.R")
+source("./feature_selection_functions/rfe_feature_selection.R")
+source("./model_training_functions/train_test_split.R")
+```
+First, testing overly correlated features
+```{r}
+data(iris)
+GetCorrelation(iris, "Species")
+SelectOverlyCorrelatedFeatures(iris, "Species")
+RemoveHighlyCorrelatedFeatures(iris, "Species")
+```
+Now, testing feature selection of rfe algorithm.
+```{r message = FALSE, echo=FALSE}
+file = "https://raw.githubusercontent.com/okanbulut/tds/main/feature_selection_rfe/heart.csv"
+data <- read_csv(file)
+```
+```{r}
+head(data)
+```
+```{r}
+data <- mutate(data,
+               # random categorical variable
+               catvar = as.factor(sample(sample(letters[1:3], nrow(data), replace = TRUE))),
+               
+               # random continuous variable (mean = 10, sd = 2, r = 0)
+               contvar1 = rnorm(nrow(data), mean = 10, sd = 2),
+               
+               # continuous variable with low correlation (mean = 10, sd = 2, r = 0.2)
+               contvar2 = rnorm_pre(data$target, mu = 10, sd = 2, r = 0.2, empirical = TRUE),
+               
+               # continuous variable with moderate correlation (mean = 10, sd = 2, r = 0.5)
+               contvar3 = rnorm_pre(data$target, mu = 10, sd = 2, r = 0.5, empirical = TRUE))
+head(data)
+```
+```{r}
+data <- data %>%
+  # Save categorical features as factors
+  mutate_at(c("sex", "cp", "fbs", "restecg", "exang", "slope", "thal", "target", "catvar"), 
+            as.factor) %>%
+  # Center and scale numeric features
+  mutate_if(is.numeric, scale)
+data
+```
+Now testing the remaining things
+```{r}
+plot_intro(data)
+plot_bar(data)
+plot_correlation(data)
+```
+Now creating the rfe control
+```{r}
+control <- rfeControl(functions = rfFuncs, # random forest
+                      method = "repeatedcv", # repeated cv
+                      repeats = 5, # number of repeats
+                      number = 10) # number of folds
+```
+Splitting data into train and test
+```{r}
+# Features
+x <- data %>%
+  select(-target, -catvar, -contvar1, -contvar2, -contvar3) %>%
+  as.data.frame()
+
+# Target variable
+y <- data$target
+
+# Training: 80%; Test: 20%
+set.seed(2021)
+inTrain <- createDataPartition(y, p = .80, list = FALSE)[,1]
+
+x_train <- x[ inTrain, ]
+x_test  <- x[-inTrain, ]
+
+y_train <- y[ inTrain]
+y_test  <- y[-inTrain]
+```
+Now creating the model
+```{r}
+# Run RFE
+result_rfe1 <- rfe(x = x_train, 
+                   y = y_train, 
+                   sizes = c(1:13),
+                   rfeControl = control)
+
+# Print the results
+result_rfe1
+
+# Print the selected features
+predictors(result_rfe1)
+
+# Print the results visually
+ggplot(data = result_rfe1, metric = "Accuracy") + theme_bw()
+ggplot(data = result_rfe1, metric = "Kappa") + theme_bw()
+```
+Now finding the variables that are most important
+```{r}
+varimp_data <- data.frame(feature = row.names(varImp(result_rfe1))[1:8],
+                          importance = varImp(result_rfe1)[1:8, 1])
+
+ggplot(data = varimp_data, 
+       aes(x = reorder(feature, -importance), y = importance, fill = feature)) +
+  geom_bar(stat="identity") + labs(x = "Features", y = "Variable Importance") + 
+  geom_text(aes(label = round(importance, 2)), vjust=1.6, color="white", size=4) + 
+  theme_bw() + theme(legend.position = "none")
+```
+Now checking with the dummy variable
+```{r}
+# This time, keep the pseudo variables in the data
+x <- data %>%
+  select(-target) %>%
+  as.data.frame()
+
+x_train <- x[ inTrain, ]
+x_test  <- x[-inTrain, ]
+
+# Run RFE
+result_rfe2 <- rfe(x = x_train, 
+                   y = y_train, 
+                   sizes = c(1:17), # 17 features in total
+                   rfeControl = control)
+
+# Print the results
+result_rfe2
+
+# Variable importance
+varimp_data <- data.frame(feature = row.names(varImp(result_rfe2))[1:5],
+                          importance = varImp(result_rfe2)[1:5, 1])
+
+ggplot(data = varimp_data, 
+       aes(x = reorder(feature, -importance), y = importance, fill = feature)) +
+  geom_bar(stat="identity") + labs(x = "Features", y = "Variable Importance") + 
+  geom_text(aes(label = round(importance, 2)), vjust=1.6, color="white", size=4) + 
+  theme_bw() + theme(legend.position = "none")
+```
+Now testing this as a function
+```{r}
+RecodeNumericalVariables(data, c("sex", "cp", "fbs", "restecg", "exang", "slope", "thal", "target", "catvar"))
+```
+```{r}
+control2 <- CreateRFEControl()
+control2
+```
+Now testing training and test splitting data
+```{r}
+X <- select(data, -target)
+y <- data$target
+train_test_split <- CreateTrainTestSplit(X, y)
+```
+
