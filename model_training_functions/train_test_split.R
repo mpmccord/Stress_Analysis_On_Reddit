@@ -1,3 +1,6 @@
+# Deprecated due to the difficulty in returning the data. 
+# There is a workaround but better to just use this code as a workaround.
+
 # Randomly samples the data into a training and test set.
 # @param x: a dataframe without the target variable
 # @param y: the target variable

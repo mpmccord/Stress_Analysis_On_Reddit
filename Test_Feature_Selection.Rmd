@@ -2,7 +2,10 @@
 title: "Test_Feature_Selection"
 author: "Melanie McCord"
 date: "10/12/2021"
-output: html_document
+output:
+  prettydoc::html_pretty:
+    theme: lumen
+    highlight: github
 ---
 
 ```{r setup, include=FALSE}
@@ -169,6 +172,10 @@ y_test <- as.matrix(train_test_split$y_test)
 ```
 
 ```{r}
-RunRFE(x_train, y_train)
+result_rfe1 <- RunRFE(x_train, y_train)
+```
+
+```{r}
+predictors(result_rfe1)
 ```
 

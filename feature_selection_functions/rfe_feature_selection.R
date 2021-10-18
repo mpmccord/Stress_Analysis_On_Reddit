@@ -4,6 +4,16 @@ library(faux)
 library(DataExplorer)
 library(tidyverse)
 source("model_training_functions/train_test_split.R")
+# Below is a series of functions for creating RFE feature selection.
+
+# To run this code:
+# 1. Run RecodeNumericalVariables() on the full dataset (factor the categorical variables)
+# 2. CreateRFEControl() (optional, if you want to control the rfe control)
+# 3. Split data into train and test (see train_test_split for an example)
+# 4. RunRFE() to get the rfe results.
+
+# You can visualize the result 
+
 
 # Function for converting categorical/non-scaled variables and recoding them
 # @param: df: a dataframe

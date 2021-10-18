@@ -77,7 +77,7 @@ GetRareWords <- function(df, rare_defn = 10) {
 ReplaceRareWords <- function(df, rare_defn = 10) {
   rare_words <- GetRareWords(df, rare_defn)
   rare_length <- length(rare_words)
-  rare_words <- paste(rare_words, collapse = "| ")
+  rare_words <- paste(rare_words, collapse = "$| ")
   replacement <- "unk"
   words_and_id <- CleanText(df) %>%
     mutate(word = str_replace_all(word, rare_words, replacement = replacement))

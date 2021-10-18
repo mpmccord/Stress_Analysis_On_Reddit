@@ -1,0 +1,60 @@
+---
+title: "Tuning Definition of Rare Words"
+author: "Melanie McCord"
+date: "10/18/2021"
+output: html_document
+---
+
+```{r}
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
+train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
+reddit_stress_data <- add_row(train_data, test_data)
+```
+
+
+```{r}
+bag_of_words <- CreateBagOfWords(reddit_stress_data)
+dim(bag_of_words)
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 100)
+dim(bag_of_words_with_unknowns)
+```
+Now will test removal of rare words
+```{r}
+rare_words_removed <- ReplaceRareWords(reddit_stress_data)
+```
+
+Now seeing testing a smaller subset of words
+```{r}
+text <- c(rep("chocolate candy", 3), rep("peanut butter", 4), rep("peanut cookies", 2), rep("butterscotch cookies", 2))
+text <- tibble(text)
+text
+```
+Now trying to create a subset of this
+```{r}
+my_length <- length(text)
+ids <- 1:dim(text)[1]
+ids
+test_df <- text %>%
+  mutate(id = ids)
+test_df
+```
+Now trying to run bag of words on this
+```{r}
+dim(test_df)[1]
+bag_of_words_test <- CreateBagOfWords(test_df)
+bag_of_words_test
+dim(bag_of_words_test)
+```
+
+Now replacing the rare words
+```{r}
+unknown_test <- CreateBagOfWordsWithUnknowns(test_df, 20)
+dim(CreateBagOfWordsWithUnknowns(test_df, 20))
+```
+
+```{r}
+colnames(bag_of_words_test)
+cat("\n")
+colnames(unknown_test)
+```
+

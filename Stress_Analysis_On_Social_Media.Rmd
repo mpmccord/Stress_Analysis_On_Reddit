@@ -2,7 +2,10 @@
 title: "Stress_Analysis_On_Reddit"
 author: "Melanie McCord"
 date: "9/30/2021"
-output: html_document
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
 ---
 
 ```{r setup, include=FALSE}
@@ -18,8 +21,13 @@ source("./feature_creation_functions/create_bag_of_words_model.R")
 source("./feature_creation_functions/create_sentiment_model.R")
 source("./data_visualization_functions/plot_frequency_distribution.R")
 source("./feature_selection_functions/remove_overly_correlated_features.R")
+source("./feature_selection_functions/rfe_feature_selection.R")
 
 ```
+# Introduction
+For this project, I will be analyzing stress and non-stress related posts on Reddit and predicting which posts are stress-related and non-stress related. In order to do this, I will need to extract word counts for each words in order to create a numerical variable that will be understood by the computer.
+
+# Part 1: Reading in the Data
 Now let's start off by reading in the training and test data.
 ```{r}
 test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
@@ -28,7 +36,7 @@ reddit_stress_data <- add_row(train_data, test_data)
 ```
 First, I'll start by creating a bag of words representation on my data, marking unknown variables correspondingly.
 ```{r}
-bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 20)
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 50)
 ```
 
 Since we have our bag of words model, let's mutate to represent the proportion of words for that variable.
@@ -38,14 +46,50 @@ stress_data_with_bow <- reddit_stress_data %>%
   left_join(bag_of_words_with_unknowns, by = "id")
 head(stress_data_with_bow, 2)
 ```
-Now removing the correlated features:
+# Predicting Whether a Post is Stress-Related
+## Running Feature Selection on the Dataset
+Now I'm going to run rfe feature selection on the dataset. First, we will need to mark the categorical variables as categorical.
 ```{r}
-label <- reddit_stress_data$label
-text_features <- bag_of_words_with_unknowns
-small_bag_of_words <- RemoveHighlyCorrelatedFeatures(text_features, "id", 0.7)
+# Removing the target variables and identifying variables
+stress_data_minus_ids <- stress_data_with_bow %>%
+  select(-c(subreddit, post_id, id)) %>%
+  na.omit()
+stress_data_minus_ids <- RecodeNumericalVariables(stress_data_minus_ids, cat_vars = c(names(select(bag_of_words_with_unknowns, -id)), "label"))
 ```
-Now let's display the features
+Now separating the data into X and y
 ```{r}
-head(small_bag_of_words, 2)
+X <- stress_data_minus_ids %>%
+  select(-label)
+y = stress_data_minus_ids$label
+```
+
+Next, let's split the data into training and test data.
+```{r}
+inTrain <- createDataPartition(y, p = 0.8, list = FALSE)[,1]
+  
+x_train <- X[ inTrain, ]
+x_test  <- X[-inTrain, ]
+
+y_train <- y[ inTrain]
+y_test  <- y[-inTrain]
+```
+Next, I will run feature selection on the dataset.
+```{r eval = FALSE}
+i = 12170
+my_filename <- paste("saved_data/rfe_for", i, ".csv", sep = "")
+my_rfe <- RunRFE(x_train, y_train, max_size = i)
+```
+
+```{r eval = FALSE}
+varimp_data <- data.frame(feature = row.names(varImp(result_rfe1)),
+                          importance = varImp(result_rfe1))
+```
+
+```{r eval = FALSE}
+ggplot(data = varimp_data, 
+       aes(x = reorder(feature, -importance), y = importance, fill = feature)) +
+  geom_bar(stat="identity") + labs(x = "Features", y = "Variable Importance") + 
+  geom_text(aes(label = round(importance, 2)), vjust=1.6, color="white", size=4) + 
+  theme_bw() + theme(legend.position = "none")
 ```
 
