@@ -116,18 +116,6 @@ words_tokenized_rare_words_removed %>%
 length(my_top_word_counts$word)
 ```
 
-
-Since the number of words is over 12,000, it is difficult to see patterns among the data. Further, Another thing that may be helpful is to visualize the distribution of words in the dataset.
-```{r}
-mean(my_top_word_counts$n)
-sd(my_top_word_counts$n)
-IQR(my_top_word_counts$n)
-median(my_top_word_counts$n)
-
-
-```
-
-
 # Part 4: Visualizing Top 20 Most Common Words Among the Data
 Now let's see the most common words among the data (overall).
 ```{r}
