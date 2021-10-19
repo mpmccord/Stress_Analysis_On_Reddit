@@ -36,7 +36,7 @@ reddit_stress_data <- add_row(train_data, test_data)
 ```
 First, I'll start by creating a bag of words representation on my data, marking unknown variables correspondingly.
 ```{r}
-bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 20)
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 10)
 ```
 
 

@@ -3,8 +3,7 @@ title: "Visualizing the Distribution of Words"
 author: "Melanie McCord"
 date: "10/14/2021"
 output: 
-  prettydoc::html_pretty:
-    theme: lumen
+  html_document:
     toc: true
 ---
 
@@ -63,10 +62,34 @@ plot_ly(subreddit_counts, x = ~subreddit, y = ~n, kind = "bar")
 
 ## Labels By Subreddit
 ```{r}
+ggplot(reddit_stress_data, aes(y = label), height = 100, width = 50) + geom_bar(fill = "steelblue") + labs(title = "Labels by Subreddit") + facet_grid(label ~ subreddit)
+```
+
+# Part 3: Visualizing the Words in Dataset and Reduction of Features
+First, to get a better idea of what the overall word distribution is, let's plot all of the word frequencies.
+```{r}
+my_top_word_counts <- words_tokenized %>%
+    count(word) %>%
+    arrange(desc(n))
+ggplot(my_top_word_counts, aes(x = word, y = n)) + geom_col()
+```
+This visualization is not particularly helpful since the number of unique words is high. Let's see how high the initial set of words is.
+```{r}
+length(my_top_word_counts$word)
+```
+
+Since the number of words is over 12,000, it is difficult to see patterns among the data. Further, Another thing that may be helpful is to visualize the distribution of words in the dataset.
+```{r}
+mean(my_top_word_counts$n)
+sd(my_top_word_counts$n)
+IQR(my_top_word_counts$n)
+median(my_top_word_counts$n)
+
 
 ```
 
-# Part 3: Visualizing the Most Common Words Among the Dataset
+
+# Part 4: Visualizing Top 20 Most Common Words Among the Data
 Now let's see the most common words among the data (overall).
 ```{r}
 GetTopNMostCommonWords <- function(df, num) {
@@ -77,7 +100,7 @@ GetTopNMostCommonWords <- function(df, num) {
 }
 ```
 
-```{r eval = FALSE}
+```{r}
 num <- 20
 top_10_full_data <- GetTopNMostCommonWords(words_tokenized, num)
 ```
