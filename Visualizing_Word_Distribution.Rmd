@@ -206,19 +206,19 @@ ggplot(GetTopNMostCommonWords(assistance_subreddit, num), aes(x = reorder(word, 
 # Part 4: Visualizing the Distribution of Sentiment
 ## Overall
 ```{r}
-ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment")
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment")
 ```
 ## By Label
 ```{r}
-ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ label)
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ label)
 ```
 ## By Subreddit
 ```{r}
-ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ subreddit)
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ subreddit)
 ```
 
 ## By Label and Subreddit
 ```{r}
-ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_grid(subreddit ~ label)
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_grid(subreddit ~ label)
 ```
 
