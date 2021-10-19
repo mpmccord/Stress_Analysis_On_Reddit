@@ -49,7 +49,10 @@ CreateRFEControl <- function(my_method = "repeatedcv", num_repeats = 5, num_fold
 # @param y_train: target features
 # @param rfeControl: rfe control object (by default: will be created)
 # @return: results of rfe
-RunRFE <- function(x_train, y_train, rfeControl = CreateRFEControl(), max_size=13) {
+RunRFE <- function(x_train, y_train, control = NULL, max_size=13) {
+  if (is.null(control)) {
+    control = CreateRFEControl()
+  }
   return (rfe(x = x_train, 
              y = y_train, 
              sizes = c(1:max_size), 

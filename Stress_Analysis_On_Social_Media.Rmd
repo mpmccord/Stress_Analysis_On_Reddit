@@ -36,8 +36,9 @@ reddit_stress_data <- add_row(train_data, test_data)
 ```
 First, I'll start by creating a bag of words representation on my data, marking unknown variables correspondingly.
 ```{r}
-bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 50)
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 20)
 ```
+
 
 Since we have our bag of words model, let's mutate to represent the proportion of words for that variable.
 ```{r}
@@ -75,7 +76,7 @@ y_test  <- y[-inTrain]
 ```
 Next, I will run feature selection on the dataset.
 ```{r eval = FALSE}
-i = 12170
+i = 1723
 my_filename <- paste("saved_data/rfe_for", i, ".csv", sep = "")
 my_rfe <- RunRFE(x_train, y_train, max_size = i)
 ```
