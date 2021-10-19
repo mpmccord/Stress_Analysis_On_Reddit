@@ -69,7 +69,7 @@ GetRareWords <- function(df, rare_defn = 10) {
   rare_words <- CleanText(df) %>%
     count(word) %>%
     filter(n < rare_defn)
-  return (rare_words$word)
+  return (paste(str_c(rare_words$word, collapse = "$|", sep=""), "$"))
 }
 # Based on get_rare words, 
 # Parameters: df: a dataframe with a text column and id column
