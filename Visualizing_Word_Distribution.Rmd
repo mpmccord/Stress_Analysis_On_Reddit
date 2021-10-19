@@ -47,12 +47,18 @@ words_tokenized_train <- train_data %>%
 # Part 2: Understanding the General Structure of the Data
 ## Getting the Labels Distribution
 ```{r}
-
+label_counts <- reddit_stress_data %>%
+  group_by(label) %>%
+  count()
+plot_ly(label_counts, x = ~label, y = ~n, type = "bar")
 ```
 
 ## Subreddit Distribution
 ```{r}
-
+subreddit_counts <- reddit_stress_data %>%
+  group_by(subreddit) %>%
+  count()
+plot_ly(subreddit_counts, x = ~subreddit, y = ~n, kind = "bar")
 ```
 
 ## Labels By Subreddit
