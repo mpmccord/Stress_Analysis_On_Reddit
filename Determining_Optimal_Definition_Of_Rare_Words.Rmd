@@ -1,0 +1,59 @@
+---
+title: "Determining the Optimal Definition of Rare Words"
+author: "Melanie McCord"
+date: "10/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidytext)
+source("feature_creation_functions/create_bag_of_words_model.R")
+```
+What are the top words that appear in the original dataset?
+```{r}
+train_data <- read_csv("reddit_stress_data/dreaddit-train.csv")
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
+reddit_stress_data <- add_row(train_data, test_data)
+my_top_word_counts <- CleanText(reddit_stress_data) %>%
+  count(word) %>%
+  arrange(desc(n))
+head(my_top_word_counts, 5)
+```
+
+Although some words appear very frequently, most of the words barely appear compared to the top words. Let's see what happens if we eliminate words based on whether they appear less than or equal to 5 times.
+```{r}
+words_tokenized_rare_words_removed <- ReplaceRareWords(reddit_stress_data, rare_defn = 5)
+words_tokenized_rare_words_removed %>%
+  count(word) %>%
+  arrange(desc(n)) %>%
+  ggplot(aes(y = n)) + geom_boxplot(fill = "steelblue")
+```
+There seem to still be significant outliers in the dataset. I'm going to look at the one significant outlier and see what it is.
+```{r}
+words_tokenized_rare_words_removed %>%
+  count(word) %>%
+  arrange(desc(n)) %>%
+  head(5)
+```
+
+Defining the cut off for rare words removal to be 5 reduces the number of words somewhat but the data is still heavily right skewed. Let's try setting the cut off to 15.
+```{r}
+words_tokenized_rare_words_removed <- ReplaceRareWords(reddit_stress_data, rare_defn = 15)
+words_tokenized_rare_words_removed %>%
+  count(word) %>%
+  arrange(desc(n)) %>%
+  ggplot(aes(y = n)) + geom_boxplot(fill = "steelblue")
+```
+We have removed a significant number of words but the data is still heavily right skewed. It looks like there is one significant outlier that is skewing the data.
+```{r}
+words_tokenized_rare_words_removed %>%
+  count(word) %>%
+  arrange(desc(n)) %>%
+  head(5)
+```
+
+
+```{r}
+length(my_top_word_counts$word)

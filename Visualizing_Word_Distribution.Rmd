@@ -66,57 +66,7 @@ plot_ly(subreddit_counts, x = ~subreddit, y = ~n, kind = "bar")
 ggplot(reddit_stress_data, aes(y = label), height = 100, width = 50) + geom_boxplot(fill = "steelblue") + labs(title = "Labels by Subreddit") + facet_grid(label ~ subreddit)
 ```
 
-# Part 3: Visualizing the Words in Dataset and Reduction of Features
-First, to get a better idea of what the overall word distribution is, let's plot all of the word frequencies.
-```{r}
-my_top_word_counts <- words_tokenized %>%
-    count(word) %>%
-    arrange(desc(n))
-ggplot(my_top_word_counts, aes(y = n)) + geom_boxplot(fill = "steelblue")
-```
-What are the top words that appear in the original dataset?
-```{r}
-head(my_top_word_counts, 5)
-```
-
-Although some words appear very frequently, most of the words barely appear compared to the top words. Let's see what happens if we eliminate words based on whether they appear less than or equal to 5 times.
-```{r}
-words_tokenized_rare_words_removed <- ReplaceRareWords(reddit_stress_data, rare_defn = 5)
-words_tokenized_rare_words_removed %>%
-  count(word) %>%
-  arrange(desc(n)) %>%
-  ggplot(aes(y = n)) + geom_boxplot(fill = "steelblue")
-```
-There seem to still be significant outliers in the dataset. I'm going to look at the one significant outlier and see what it is.
-```{r}
-words_tokenized_rare_words_removed %>%
-  count(word) %>%
-  arrange(desc(n)) %>%
-  head(5)
-```
-
-Defining the cut off for rare words removal to be 5 reduces the number of words somewhat but the data is still heavily right skewed. Let's try setting the cut off to 15.
-```{r}
-words_tokenized_rare_words_removed <- ReplaceRareWords(reddit_stress_data, rare_defn = 15)
-words_tokenized_rare_words_removed %>%
-  count(word) %>%
-  arrange(desc(n)) %>%
-  ggplot(aes(y = n)) + geom_boxplot(fill = "steelblue")
-```
-We have removed a significant number of words but the data is still heavily right skewed. It looks like there is one significant outlier that is skewing the data.
-```{r}
-words_tokenized_rare_words_removed %>%
-  count(word) %>%
-  arrange(desc(n)) %>%
-  head(5)
-```
-
-
-```{r}
-length(my_top_word_counts$word)
-```
-
-# Part 4: Visualizing Top 20 Most Common Words Among the Data
+# Part 3: Visualizing Top 20 Most Common Words Among the Data
 Now let's see the most common words among the data (overall).
 ```{r}
 GetTopNMostCommonWords <- function(df, num) {
