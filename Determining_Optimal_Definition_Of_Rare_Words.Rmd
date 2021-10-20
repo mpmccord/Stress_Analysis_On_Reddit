@@ -16,21 +16,32 @@ What are the top words that appear in the original dataset?
 train_data <- read_csv("reddit_stress_data/dreaddit-train.csv")
 test_data <- read_csv("reddit_stress_data/dreaddit-test.csv")
 reddit_stress_data <- add_row(train_data, test_data)
-my_top_word_counts <- CleanText(reddit_stress_data) %>%
+my_top_word_counts <- reddit_stress_data %>%
+  select(text, id, subreddit, label) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word = gsub('[[:punct:]]+','', word)) %>%
+  mutate(word = gsub('\\<[[:digit:]]+\\>', '%d%', word)) %>%
+  anti_join(stop_words, by = c("word" = "word")) %>%
+  mutate(word = paste("text", word, sep = '_')) %>%
   count(word) %>%
   arrange(desc(n))
 head(my_top_word_counts, 5)
+tail(my_top_word_counts, 5)
 ```
 
 Although some words appear very frequently, most of the words barely appear compared to the top words. Let's see what happens if we eliminate words based on whether they appear less than or equal to 5 times.
 ```{r}
 words_tokenized_rare_words_removed <- ReplaceRareWords(reddit_stress_data, rare_defn = 5)
-words_tokenized_rare_words_removed %>%
+count_words_tokenized_rare_words_removed <- words_tokenized_rare_words_removed %>%
   count(word) %>%
-  arrange(desc(n)) %>%
-  ggplot(aes(y = n)) + geom_boxplot(fill = "steelblue")
+  arrange(desc(n))
+ggplot(count_words_tokenized_rare_words_removed, aes(y = n)) + geom_boxplot(fill = "steelblue")
+head(count_words_tokenized_rare_words_removed, 5)
+tail(count_words_tokenized_rare_words_removed, 5)
 ```
-There seem to still be significant outliers in the dataset. I'm going to look at the one significant outlier and see what it is.
+It looks like most of the rare words are still clustering around 5, and the number has been significantly reduced.
+Let's replace the rare words and then look at the distribution of words removed by subreddit.
+
 ```{r}
 words_tokenized_rare_words_removed %>%
   count(word) %>%
