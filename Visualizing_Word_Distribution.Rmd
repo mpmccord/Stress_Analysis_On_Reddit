@@ -63,7 +63,9 @@ plot_ly(subreddit_counts, x = ~subreddit, y = ~n, kind = "bar")
 
 ## Labels By Subreddit
 ```{r}
-ggplot(reddit_stress_data, aes(y = label), height = 100, width = 50) + geom_boxplot(fill = "steelblue") + labs(title = "Labels by Subreddit") + facet_grid(label ~ subreddit)
+# Stacked
+reddit_stress_data %>%
+  ggplot(aes(y=subreddit)) + geom_bar(aes(fill = as.factor(label)), position="stack")
 ```
 
 # Part 3: Visualizing Top 20 Most Common Words Among the Data
@@ -78,7 +80,7 @@ GetTopNMostCommonWords <- function(df, num) {
 ```
 
 ```{r}
-num <- 20
+num <- 15
 top_10_full_data <- GetTopNMostCommonWords(words_tokenized, num)
 ```
 
@@ -101,54 +103,16 @@ Now let's see the difference among stressed data.
 ggplot(GetTopNMostCommonWords(stressed_data, num), aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 10 Words from the Stressed Dataset", x = "Word", y = "Frequency")
 
 ```
-# Exploring Differences in Subreddit Data
-Now we're going to examine the differences by subreddit. First, we will see what unique subreddits have been selected. For each subreddit, I want to examine the difference between the labels and the different words among each label.
-```{r}
-unique(reddit_stress_data$subreddit)
-```
-I'm interested in understanding how the data is distributed among each of these subreddits.
-```{r}
-ggplot(reddit_stress_data, aes(x = subreddit)) + geom_bar(fill = "steelblue")
-```
-
-
-## PTSD Subreddit
-Now, let's check out the ptsd subreddit.
-```{r}
-ptsd_data <- filter(words_tokenized, subreddit == "ptsd")
-ggplot(filter(reddit_stress_data, subreddit == "ptsd"), aes(x = label)) + geom_bar(fill = "steelblue") + labs(title = "PTSD Data by Label")
-ggplot(GetTopNMostCommonWords(ptsd_data, num), aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 10 Words from the PTSD Subreddit", x = "Word", y = "Frequency")
-
-```
-## Domestic Violence Subreddit
-Now, let's check out the domestic violence subreddit.
-```{r}
-domestic_violence_data <- filter(words_tokenized, subreddit == "domesticviolence")
-ggplot(filter(reddit_stress_data, subreddit == "domesticviolence"), aes(x = label)) + geom_bar(fill = "steelblue") + labs(title = "Domestic Violence Data by Label")
-ggplot(GetTopNMostCommonWords(domestic_violence_data, num), aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 10 Words from the Domestic Violence Subreddit", x = "Word", y = "Frequency")
-```
-## Almost Homeless Subreddit
-Now let's check out the almost homeless subreddit
-```{r}
-almost_homeless_data <- filter(words_tokenized, subreddit == "almosthomeless")
-ggplot(filter(reddit_stress_data, subreddit == "almosthomeless"), aes(x = label)) + geom_bar(fill = "steelblue") + labs(title = "Almost Homeless Data by Label")
-ggplot(GetTopNMostCommonWords(almost_homeless_data, num), aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 10 Words from the Almost Homeless Subreddit", x = "Word", y = "Frequency")
-```
-## Assistance Subreddit
-```{r}
-assistance_subreddit <- filter(words_tokenized, subreddit == "assistance")
-ggplot(filter(reddit_stress_data, subreddit == "assistance"), aes(x = label)) + geom_bar(fill = "steelblue") + labs(title = "Assistance Data by Label")
-ggplot(GetTopNMostCommonWords(assistance_subreddit, num), aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 20 Words from the Assistance Subreddit", x = "Word", y = "Frequency")
-```
-
 # Part 4: Visualizing the Distribution of Sentiment
 ## Overall
 ```{r}
 ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment")
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment")
 ```
 ## By Label
 ```{r}
 ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ label)
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ label)
 ```
 ## By Subreddit
 ```{r}

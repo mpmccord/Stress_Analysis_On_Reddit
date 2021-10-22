@@ -43,10 +43,7 @@ It looks like most of the rare words are still clustering around 5, and the numb
 Let's replace the rare words and then look at the distribution of words removed by subreddit.
 
 ```{r}
-words_tokenized_rare_words_removed %>%
-  count(word) %>%
-  arrange(desc(n)) %>%
-  head(5)
+
 ```
 
 Defining the cut off for rare words removal to be 5 reduces the number of words somewhat but the data is still heavily right skewed. Let's try setting the cut off to 15.
