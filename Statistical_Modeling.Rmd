@@ -1,0 +1,64 @@
+---
+title: "Training a Decision Tree Model"
+author: "Melanie McCord"
+date: "10/22/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# load required packages
+library(tidytext)
+library(tidyverse)
+library(caret)
+library(stringr)
+library(rpart)
+source("./model_training_functions/train_test_split.R")
+source("./feature_creation_functions/create_bag_of_words_model.R")
+source("./feature_creation_functions/create_sentiment_model.R")
+source("./data_visualization_functions/plot_frequency_distribution.R")
+source("./feature_selection_functions/remove_overly_correlated_features.R")
+source("./feature_selection_functions/rfe_feature_selection.R")
+```
+# Reading in the Data
+```{r}
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
+train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
+reddit_stress_data <- add_row(train_data, test_data)
+```
+Now creating the bag of words model of the data
+```{r}
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 15)
+```
+Now joining the two datasets
+```{r}
+reddit_stress_data_full <- reddit_stress_data %>%
+  select(-text) %>%
+  left_join(bag_of_words_with_unknowns, by = "id")
+head(reddit_stress_data_full, 2)
+```
+# Running Feature Selection
+```{r}
+# Dropping id columns and subreddit
+reddit_stress_data_full <- reddit_stress_data_full %>%
+  select(-c("id", "post_id", "subreddit"))
+```
+
+```{r}
+x <- reddit_stress_data_full %>%
+  na.omit() %>%
+  select(-label)
+y <- reddit_stress_data$label
+inTrain <- createDataPartition(y, p = 0.75, list = FALSE)[,1]
+  
+  x_train <- x[ inTrain, ]
+  x_test  <- x[-inTrain, ]
+  
+  y_train <- y[ inTrain]
+  y_test  <- y[-inTrain]
+```
+Now running rfe feature selection on the data
+```{r}
+RunRFE(x_train, y_train, max_size = 1800)
+```
+
