@@ -90,6 +90,7 @@ Now let's see the difference among stressed data.
 ggplot(GetTopNMostCommonWords(stressed_data, num), aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 10 Words from the Stressed Dataset", x = "Word", y = "Frequency")
 
 ```
+
 # Visualizing the Distribution of Words By Subreddit
 ```{r}
 words_tokenized_by_subreddit_counts <- reddit_stress_data %>%
