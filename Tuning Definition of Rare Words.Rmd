@@ -6,6 +6,10 @@ output: html_document
 ---
 
 ```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidytext)
+source("feature_creation_functions/create_bag_of_words_model.R")
 test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
 train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
 reddit_stress_data <- add_row(train_data, test_data)

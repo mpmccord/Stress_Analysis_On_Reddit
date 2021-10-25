@@ -33,18 +33,24 @@ head(words_tokenized)
 ```
 # Part 2: Understanding the General Structure of the Data
 ## Getting the Labels Distribution
-```{r results='hide', echo=TRUE}
+```{r echo=TRUE}
 label_counts <- reddit_stress_data %>%
   group_by(label) %>%
   count()
 plot_ly(label_counts, x = ~label, y = ~n, type = "bar")
 ```
+### Table of Subreddits
+```{r}
+label_counts
+```
+
 
 ## Subreddit Distribution
 ```{r}
 subreddit_counts <- reddit_stress_data %>%
   group_by(subreddit) %>%
   count()
+subreddit_counts
 plot_ly(subreddit_counts, x = ~subreddit, y = ~n, type = "bar")
 ```
 
@@ -90,8 +96,7 @@ Now let's see the difference among stressed data.
 ggplot(GetTopNMostCommonWords(stressed_data, num), aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 10 Words from the Stressed Dataset", x = "Word", y = "Frequency")
 
 ```
-
-# Visualizing the Distribution of Words By Subreddit
+# Visualizing the Distribution of Words By Label
 ```{r}
 words_tokenized_by_subreddit_counts <- reddit_stress_data %>%
   select(c("id", "text", "label", "subreddit")) %>%
@@ -104,8 +109,41 @@ words_tokenized_by_subreddit_counts <- reddit_stress_data %>%
   arrange(subreddit, desc(n))
 head(words_tokenized_by_subreddit_counts)
 ```
+
+# Visualizing the Distribution of Words By Subreddit
+```{r}
+words_tokenized_by_subreddit_counts <- reddit_stress_data %>%
+  select(c("id", "text", "label", "subreddit")) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word = gsub('[[:punct:]]+','', word)) %>%
+  mutate(word = gsub('\\<[[:digit:]]+\\>', '%d%', word)) %>%
+  anti_join(stop_words) %>%
+  group_by(label) %>%
+  count(word) %>%
+  arrange(label, desc(n))
+head(words_tokenized_by_subreddit_counts)
+words_tokenized_by_subreddit_counts %>%
+  top_n(10, n) %>%
+  ungroup() %>%  
+  mutate(label = as.factor(label)) %>%
+  arrange(label, n) %>%  
+  mutate(topic_r = row_number()) %>%
+  ggplot(aes(word, n, fill = label)) + 
+  geom_col() +
+  facet_wrap(~ label, scales = "free") + theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+```
 Now let's plot them
 ```{r}
+words_tokenized_by_subreddit_counts <- reddit_stress_data %>%
+  select(c("id", "text", "label", "subreddit")) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word = gsub('[[:punct:]]+','', word)) %>%
+  mutate(word = gsub('\\<[[:digit:]]+\\>', '%d%', word)) %>%
+  anti_join(stop_words) %>%
+  group_by(subreddit) %>%
+  count(word) %>%
+  arrange(subreddit, desc(n))
+head(words_tokenized_by_subreddit_counts)
 words_tokenized_by_subreddit_counts %>%
   top_n(10, n) %>%
   ungroup() %>%  
@@ -120,12 +158,14 @@ words_tokenized_by_subreddit_counts %>%
 ## Overall
 ```{r}
 ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment")
-ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment")
+mx <- 0
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + geom_vline(xintercept = mx, col = "red", lwd = 1) + annotate("text", x = 0.1, y = 400, label = "Neutral")
 ```
 ## By Label
 ```{r}
 ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue") + labs(title = "Distribution of Sentiment") + facet_wrap(~ label)
-ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ label)
+
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblue", bins = 50) + labs(title = "Distribution of Sentiment") + facet_wrap(~ label) + geom_vline(xintercept = mx, col = "red", lwd = 1) + annotate("text", x = 0.2, y = 400, label = "Neutral")
 ```
 ## By Subreddit
 ```{r}
@@ -134,7 +174,7 @@ ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue"
 
 ## By Label and Subreddit
 ```{r}
-ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue") + labs(title = "Distribution of Sentiment") + facet_grid(subreddit ~ label, switch =) + theme(strip.text.y.left = element_text(angle = 0))
+ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue") + labs(title = "Distribution of Sentiment") + facet_grid(subreddit ~ label, switch ="y") + theme(strip.text.y.left = element_text(angle = 0))
 
 ```
 

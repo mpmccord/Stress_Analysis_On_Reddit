@@ -62,6 +62,15 @@ words_tokenized_rare_words_removed %>%
   head(5)
 ```
 
+What happens if we remove the outlier?
+```{r}
+words_tokenized_rare_words_removed %>%
+  count(word) %>%
+  arrange(desc(n)) %>%
+  filter(n < max(n)) %>%
+  ggplot(aes(y = n)) + geom_boxplot(fill = "steelblue")
+```
+
 
 ```{r}
 length(my_top_word_counts$word)
