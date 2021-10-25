@@ -194,6 +194,11 @@ ggplot(reddit_stress_data, aes(x = sentiment)) + geom_histogram(fill = "steelblu
 ```{r}
 ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue") + labs(title = "Distribution of Sentiment") + facet_wrap(~ subreddit)
 ```
+```{r}
+reddit_stress_data %>%
+  filter(subreddit == "ptsd" | subreddit == "stress") %>%
+  ggplot(aes(x = sentiment)) + geom_boxplot(fill = "steelblue") + labs(title = "Distribution of Sentiment") + facet_wrap(~ subreddit)
+```
 
 ## By Label and Subreddit
 ```{r}
