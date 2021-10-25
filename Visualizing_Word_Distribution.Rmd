@@ -153,6 +153,29 @@ words_tokenized_by_subreddit_counts %>%
   geom_col() +
   facet_wrap(~ subreddit, scales = "free") + theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
 ```
+Now looking at a subset.
+```{r}
+words_tokenized_by_subreddit_counts <- reddit_stress_data %>%
+  select(c("id", "text", "label", "subreddit")) %>%
+  filter(subreddit == "almosthomeless" | subreddit == "anxiety" | subreddit == "survivorsofabuse") %>%
+  unnest_tokens(word, text) %>%
+  mutate(word = gsub('[[:punct:]]+','', word)) %>%
+  mutate(word = gsub('\\<[[:digit:]]+\\>', '%d%', word)) %>%
+  anti_join(stop_words) %>%
+  group_by(subreddit) %>%
+  count(word) %>%
+  arrange(subreddit, desc(n))
+head(words_tokenized_by_subreddit_counts)
+words_tokenized_by_subreddit_counts %>%
+  top_n(10, n) %>%
+  ungroup() %>%  
+  arrange(subreddit, n) %>%  
+  mutate(topic_r = row_number()) %>%
+  ggplot(aes(word, n, fill = subreddit)) + 
+  geom_col() +
+  facet_wrap(~ subreddit, scales = "free") + theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+```
+
 
 # Part 4: Visualizing the Distribution of Sentiment
 ## Overall
@@ -176,5 +199,11 @@ ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue"
 ```{r}
 ggplot(reddit_stress_data, aes(x = sentiment)) + geom_boxplot(fill = "steelblue") + labs(title = "Distribution of Sentiment") + facet_grid(subreddit ~ label, switch ="y") + theme(strip.text.y.left = element_text(angle = 0))
 
+```
+Now looking at a selection of these:
+```{r}
+reddit_stress_data %>%
+  filter(subreddit == "assistance" | subreddit == "stress") %>%
+  ggplot(aes(x = sentiment)) + geom_boxplot(fill = "steelblue") + labs(title = "Distribution of Sentiment") + facet_grid(subreddit ~ label, switch ="y") + theme(strip.text.y.left = element_text(angle = 0))
 ```
 
