@@ -1,0 +1,31 @@
+---
+title: "Chi Squared Tests"
+author: "Melanie McCord"
+date: "10/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidytext)
+```
+
+# Chi-Square Test of Association
+## Reading in the Data
+```{r}
+train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
+reddit_stress_data <- add_row(train_data, test_data)
+```
+
+## Chi-Square Test of Association Between Subreddit and Label
+```{r}
+chisq.test(reddit_stress_data$subreddit, reddit_stress_data$label)
+```
+
+## Analysis Of Variance Test for Sentiment and Label
+```{r}
+aov(reddit_stress_data$sentiment ~ as.factor(reddit_stress_data$label))
+```
+

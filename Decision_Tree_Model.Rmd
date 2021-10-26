@@ -1,0 +1,110 @@
+---
+title: "Decision Tree Model"
+author: "Melanie McCord"
+date: "10/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidytext)
+library(tidyverse)
+library(caret)
+library(stringr)
+library(rpart)
+library(caTools)
+library(party)
+library(partykit)
+library(rpart.plot)
+source("./model_training_functions/train_test_split.R")
+source("./feature_creation_functions/create_bag_of_words_model.R")
+source("./feature_creation_functions/create_sentiment_model.R")
+source("./data_visualization_functions/plot_frequency_distribution.R")
+source("./feature_selection_functions/remove_overly_correlated_features.R")
+source("./feature_selection_functions/rfe_feature_selection.R")
+```
+Now let's load in the data
+```{r}
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
+train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
+reddit_stress_data <- add_row(train_data, test_data)
+```
+First, let's create the bag of words model.
+```{r}
+bag_of_words_with_unknowns <- CreateBagOfWordsWithUnknowns(reddit_stress_data, rare_defn = 15)
+```
+Then, let's join this with the reddit stress data.
+```{r}
+stress_data_with_bow <- reddit_stress_data %>%
+  select(sentiment, label, id) %>%
+  left_join(bag_of_words_with_unknowns, by = "id")
+head(stress_data_with_bow, 2)
+```
+Now, let's split the data into training and test and remove the columns that are id columns or that R can't read.
+```{r}
+stress_data_for_analysis <- stress_data_with_bow %>%
+  select(-c(id))
+stress_data_for_analysis <- data.frame(stress_data_for_analysis)
+set.seed(123)
+sample_data = sample.split(stress_data_for_analysis, SplitRatio = 0.75)
+str(sample_data)
+train_data <- tibble(subset(stress_data_for_analysis, sample_data == TRUE))
+test_data <- tibble(subset(stress_data_for_analysis, sample_data == FALSE))
+```
+Next, let's train the decision tree on x_train, y_train.
+```{r}
+rtree <- rpart(label ~ ., data = train_data, method = "class")
+```
+Now let's plot the tree
+```{r}
+rpart.plot(rtree)
+```
+Now let's plot the ctree.
+```{r}
+ctree_ <- ctree(label ~ ., train_data)
+plot(ctree_)
+```
+This plots the most important features, but I'm interested in the rules for the classification.
+```{r}
+rpart.rules(rtree)
+```
+
+Now let's run this decision tree model on the test data and see how it performs.
+```{r}
+y_pred <- predict(rtree, test_data, type = "class")
+```
+Now let's see how it performs.
+```{r}
+table_mat <- table(test_data$label, y_pred)
+table_mat
+```
+Now let's look at some scores for the classification.
+```{r}
+confusionMatrix(y_pred,as.factor(test_data$label))
+```
+
+From the words in sentiment, our accuracy is low. Let's tune the hyperparameters and see what we can get.
+```{r}
+control <- rpart.control(minsplit = 20, minbucket = round(20/3), maxdepth = 30)
+rtree <- rpart(label ~ ., data = train_data, method = "class", control = control)
+```
+
+```{r}
+rpart.plot(rtree)
+```
+Now let's look at the rules.
+```{r}
+rpart.rules(rtree)
+```
+Now let's see how well it performs.
+```{r}
+y_pred <- predict(rtree, test_data, type = "class")
+confusionMatrix(y_pred,as.factor(test_data$label))
+```
+
+Let's see how well it performs on the original training data.
+```{r}
+y_pred <- predict(rtree, train_data, type = "class")
+confusionMatrix(y_pred,as.factor(train_data$label))
+```
+
