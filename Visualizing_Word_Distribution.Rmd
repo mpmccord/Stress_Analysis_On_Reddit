@@ -77,7 +77,7 @@ num <- 15
 top_10_full_data <- GetTopNMostCommonWords(words_tokenized, num)
 ```
 
-Now I will plot the rop 20 most common words in the dataset
+Now I will plot the rop 15 most common words in the dataset
 ```{r}
 ggplot(top_10_full_data, aes(x = reorder(word, desc(n)), y = n)) + geom_col(fill = "steelblue") + labs(title = "Top 10 Words from the Full Dataset", x = "Word", y = "Frequency")
 ```

@@ -38,7 +38,9 @@ Then, let's join this with the reddit stress data.
 stress_data_with_bow <- reddit_stress_data %>%
   select(sentiment, label, id) %>%
   left_join(bag_of_words_with_unknowns, by = "id")
-head(stress_data_with_bow, 2)
+stress_data_with_bow %>%
+  select(c("sentiment", "label", "id", "text_cancel", "text_cancer", "text_constantly")) %>%
+  head(2)
 ```
 Now, let's split the data into training and test and remove the columns that are id columns or that R can't read.
 ```{r}

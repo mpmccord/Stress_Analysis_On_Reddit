@@ -182,41 +182,14 @@ reddit_stress_data &lt;- add_row(train_data, test_data)</code></pre>
 <pre class="r"><code>stress_data_with_bow &lt;- reddit_stress_data %&gt;%
   select(sentiment, label, id) %&gt;%
   left_join(bag_of_words_with_unknowns, by = &quot;id&quot;)
-head(stress_data_with_bow, 2)</code></pre>
-<pre><code>## # A tibble: 2 x 1,725
-##   sentiment label    id `text_%d%` text_cancel text_cancer text_constantly
-##       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;           &lt;dbl&gt;
-## 1  -0.00274     1 33181          1           0           0               0
-## 2   0.293       0  2606          1           0           0               0
-## # … with 1,718 more variables: text_diagnosed &lt;dbl&gt;, text_dont &lt;dbl&gt;,
-## #   text_dying &lt;dbl&gt;, text_fear &lt;dbl&gt;, text_feel &lt;dbl&gt;, text_friend &lt;dbl&gt;,
-## #   text_friends &lt;dbl&gt;, text_hear &lt;dbl&gt;, text_heard &lt;dbl&gt;, text_passed &lt;dbl&gt;,
-## #   text_plans &lt;dbl&gt;, text_recently &lt;dbl&gt;, text_terrified &lt;dbl&gt;,
-## #   text_ugh &lt;dbl&gt;, unk &lt;dbl&gt;, text_admit &lt;dbl&gt;, text_care &lt;dbl&gt;,
-## #   text_claim &lt;dbl&gt;, text_couldnt &lt;dbl&gt;, text_desperate &lt;dbl&gt;,
-## #   text_family &lt;dbl&gt;, text_hard &lt;dbl&gt;, text_hate &lt;dbl&gt;, text_healing &lt;dbl&gt;,
-## #   text_home &lt;dbl&gt;, text_people &lt;dbl&gt;, text_posted &lt;dbl&gt;,
-## #   text_relationships &lt;dbl&gt;, text_selfish &lt;dbl&gt;, text_share &lt;dbl&gt;,
-## #   text_spent &lt;dbl&gt;, text_stable &lt;dbl&gt;, text_support &lt;dbl&gt;, text_time &lt;dbl&gt;,
-## #   text_twitter &lt;dbl&gt;, text_youre &lt;dbl&gt;, text_basically &lt;dbl&gt;, text_due &lt;dbl&gt;,
-## #   text_explained &lt;dbl&gt;, text_front &lt;dbl&gt;, text_hand &lt;dbl&gt;,
-## #   text_listening &lt;dbl&gt;, text_mother &lt;dbl&gt;, text_nice &lt;dbl&gt;,
-## #   text_opportunity &lt;dbl&gt;, text_tells &lt;dbl&gt;, text_understand &lt;dbl&gt;,
-## #   text_wear &lt;dbl&gt;, text_begging &lt;dbl&gt;, text_bus &lt;dbl&gt;, text_buy &lt;dbl&gt;,
-## #   text_city &lt;dbl&gt;, text_cover &lt;dbl&gt;, text_current &lt;dbl&gt;, text_hour &lt;dbl&gt;,
-## #   text_lot &lt;dbl&gt;, text_nbsp &lt;dbl&gt;, text_road &lt;dbl&gt;, text_travel &lt;dbl&gt;,
-## #   text_lady &lt;dbl&gt;, text_luck &lt;dbl&gt;, text_vent &lt;dbl&gt;, text_fast &lt;dbl&gt;,
-## #   text_forward &lt;dbl&gt;, text_grades &lt;dbl&gt;, text_months &lt;dbl&gt;,
-## #   text_questions &lt;dbl&gt;, text_school &lt;dbl&gt;, text_started &lt;dbl&gt;,
-## #   text_actual &lt;dbl&gt;, text_april &lt;dbl&gt;, text_brought &lt;dbl&gt;, text_call &lt;dbl&gt;,
-## #   text_finally &lt;dbl&gt;, text_hadnt &lt;dbl&gt;, text_half &lt;dbl&gt;, text_id &lt;dbl&gt;,
-## #   text_offered &lt;dbl&gt;, text_protection &lt;dbl&gt;, text_prove &lt;dbl&gt;,
-## #   text_provided &lt;dbl&gt;, text_taking &lt;dbl&gt;, text_worry &lt;dbl&gt;,
-## #   text_active &lt;dbl&gt;, text_afraid &lt;dbl&gt;, text_anxiety &lt;dbl&gt;,
-## #   text_attack &lt;dbl&gt;, text_beat &lt;dbl&gt;, text_close &lt;dbl&gt;, text_exercise &lt;dbl&gt;,
-## #   text_fears &lt;dbl&gt;, text_finding &lt;dbl&gt;, text_harder &lt;dbl&gt;, text_heart &lt;dbl&gt;,
-## #   text_helped &lt;dbl&gt;, text_increased &lt;dbl&gt;, text_mind &lt;dbl&gt;,
-## #   text_multiple &lt;dbl&gt;, text_naturally &lt;dbl&gt;, text_panic &lt;dbl&gt;, …</code></pre>
+stress_data_with_bow %&gt;%
+  select(c(&quot;sentiment&quot;, &quot;label&quot;, &quot;id&quot;, &quot;text_cancel&quot;, &quot;text_cancer&quot;, &quot;text_constantly&quot;)) %&gt;%
+  head(2)</code></pre>
+<pre><code>## # A tibble: 2 x 6
+##   sentiment label    id text_cancel text_cancer text_constantly
+##       &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;           &lt;dbl&gt;
+## 1  -0.00274     1 33181           0           0               0
+## 2   0.293       0  2606           0           0               0</code></pre>
 <p>Now, let’s split the data into training and test and remove the columns that are id columns or that R can’t read.</p>
 <pre class="r"><code>stress_data_for_analysis &lt;- stress_data_with_bow %&gt;%
   select(-c(id))
