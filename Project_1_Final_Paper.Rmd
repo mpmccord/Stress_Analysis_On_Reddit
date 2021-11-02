@@ -1,0 +1,111 @@
+---
+title: "Project 1 Final Paper"
+author: "Melanie McCord"
+date: "11/1/2021"
+output: 
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidytext)
+library(tidyverse)
+library(caret)
+library(stringr)
+library(rpart)
+library(ggwordcloud)
+library(mosaic)
+library(ggridges)
+library(stringr)
+library(feather)
+library(caTools)
+library(party)
+library(partykit)
+library(rpart.plot)
+library(wordcloud)
+library(wordcloud2)
+library(RColorBrewer)
+source("./model_training_functions/train_test_split.R")
+source("./feature_creation_functions/create_bag_of_words_model.R")
+source("./feature_creation_functions/create_sentiment_model.R")
+source("./data_visualization_functions/plot_frequency_distribution.R")
+source("./feature_selection_functions/remove_overly_correlated_features.R")
+source("./feature_selection_functions/rfe_feature_selection.R")
+```
+
+# Introduction
+## Background
+Stress is a common aspect of modern lives that can cause negative health outcomes, such as anxiety, depression, insomnia, and a weakened immune system. If we can predict stress on social media, we can help understand the extent of the problem and perhaps gain insights on how to address it. For this specific project, the focus is on Reddit. Reddit is a social media platform where users post questions and can get advice. Importantly, Reddit data is concentrated on specific subreddits, divided by topic. This makes it easier to filter by specific topic and analyze the data from each specific topic. If we mine from stress-related subreddits, we can get a more detailed overview of the problem.  
+
+## Data Structure and Source
+This dataset was collected by mining all posts from 10 subreddits between January 1, 2017 and November 19, 2018. Then, the data was annotated by human annotators as being either "stressed", "non-stressed", or "unclear". The posts that were unclear as to whether or not they were stressed were discarded. For each post, the features are the text, the label, and some syntactic features, lexical features, and social media features, as well as the sentiment (how overly positive or negative the posts are).
+
+For more information about the dataset, see this paper: [Dreaddit: A Reddit Dataset for Stress Analysis On Social Media](https://arxiv.org/abs/1911.00133).  
+
+
+```{r}
+reddit_stress_data <- read_feather("reddit_stress_data.feather")
+reddit_stress_data %>%
+  mutate(label = as.factor(label)) %>%
+  ggplot(aes(y=subreddit)) + geom_bar(aes(fill = label), position="stack")
+```
+Clearly, the data is imbalanced between labels and subreddits. Therefore, classification algorithms may be biased in favor of misclassifying certain subreddits.
+
+## Project Goals and Research Questions
+The topics I want to explore in this paper are: How does the stress label differ among subreddits? How can we predict stress given words in the data and sentiment? Is there an association between stress-related data and subreddits? 
+# Statistical Computing Tasks
+## Data Preprocessing
+Another detail about the statistical analysis is that since I was primarily focusing on text mining, there were a number of things that I had to consider that are unique to text data. Text data is inherently messy. Firstly, computers can only process numbers, meaning that any text data needs some way to be converted to numbers. There are a lot of different ways to do this, but the model I chose to focus on is a bag of words model, which counts the number of times a particular word appears and adds each word as a feature. However, in doing so there were some things I needed to clean. Stopwords, such as "and", "so", and "to", appear frequently but don’t matter much when understanding the meaning of text.  
+
+Additionally, punctuation, and capitalization causes issues. A computer considers "Don't", "don't," and "DONT" to be separate words. As part of my data wrangling, I needed to deal with this. Also, some words only appear in one post. For example, one post may ask about resources available in Louisiana, but no other post mentions Louisiana. We need a way to deal with these issues. It's possible that rare words may indicate some information about the text, so we can't just remove rare words. Therefore, I needed to identify and mark rare words.  
+
+This was the most complicated part of the project and it required me to make a definition of what a rare word is, which I decided to set as the number of occurrences = 15. The initial testing revealed that setting rare words at 15 resulted in the mean and standard deviation being significantly deviating, while for lower values the mean, median would always be very close to the mean. Then, I had to work with strings in order to match the rare words exactly. I decided to set the unknown token as "unk".
+
+Another minor issue that I ran into was joining the data together. Since "id" for example appears in both the dataset and in the posts, I needed to create a clear split. I did this by adding the abbreviation "text_" if the word appeared in the text. I also needed to join the bag of words model to the whole text, so that was part of my computing tasks.  
+
+# Results
+Overall, I observed significant differences among the sentiment and words by label and subreddit. With my initial visualization of the words as a bar chart of the top 10 most common words, there were some differences between the words with the stressed posts having more negative words, but for it to be really apparent, I needed a barplot.
+```{r message=FALSE}
+words_tokenized <- reddit_stress_data %>%
+  select(text, id) %>%
+    unnest_tokens(word, text) %>%
+    mutate(word = gsub('[[:punct:]]+','', word)) %>%
+    mutate(word = gsub('\\<[[:digit:]]+\\>', '%d%', word)) %>%
+    anti_join(stop_words, by = c("word" = "word")) %>%
+  filter(word != "%d%")
+GetTopNMostCommonWords <- function(df, num) {
+  top_word_counts <- df %>%
+    count(word) %>%
+    arrange(desc(n))
+  return (head(top_word_counts, num))
+}
+num <- 10
+words_tokenized_by_label_counts <- reddit_stress_data %>%
+  select(c("id", "text", "label", "subreddit")) %>%
+  unnest_tokens(word, text) %>%
+  mutate(word = gsub('[[:punct:]]+','', word)) %>%
+  mutate(word = gsub('\\<[[:digit:]]+\\>', '%d%', word)) %>%
+  anti_join(stop_words) %>%
+  group_by(label) %>%
+  count(word) %>%
+  filter(word != "%d%") %>%
+  arrange(label, desc(n))
+
+words_tokenized_by_label_counts %>%
+  top_n(num, n) %>%
+  ungroup() %>%  
+  mutate(label = as.factor(label)) %>%
+  arrange(label, desc(n)) %>%  
+  mutate(topic_r = row_number()) %>%
+  ggplot(aes(word, n, fill = label)) + 
+  geom_col() +
+  facet_wrap(~ label, scales = "free") + theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+```
+Now looking at the wordcloud plot, we can see significant differences.
+```{r warning = FALSE}
+words_tokenized_by_label_counts %>%
+  ggplot(aes(label = word, size = n)) + geom_text_wordcloud(area_corr = TRUE) +
+  scale_size_area(max_size = 24) + theme_minimal() + facet_wrap(~ label)
+```
+

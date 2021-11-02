@@ -1,0 +1,23 @@
+---
+title: "Saving to a Feather"
+author: "Melanie McCord"
+date: "11/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(feather)
+```
+
+```{r}
+train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
+test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
+reddit_stress_data <- add_row(train_data, test_data)
+```
+
+```{r}
+write_feather(reddit_stress_data, "reddit_stress_data.feather")
+```
+

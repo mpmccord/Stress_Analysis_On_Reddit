@@ -2,7 +2,7 @@
 title: "R for Data Science Project 1: Stress Analysis On Reddit"
 author: "Melanie McCord"
 output: 
-  word_document:
+  html_document:
     toc: true
 ---
 
@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = FALSE)
 # load required packages
 library(tidytext)
 library(tidyverse)
+library(ggwordcloud)
 library(caret)
 library(stringr)
 library(rpart)
@@ -215,27 +216,13 @@ The most common words by label are significantly different. Stress related posts
 Now, let's look at a word cloud of the words by label for a better look at some of the most common words among each category.  
 
 ```{r}
-layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
-par(mar=rep(0, 4))
-plot.new()
-text(x=0.5, y=0.5, "Non-stressed posts")
-# Non-stressed data
-toPlot <- words_tokenized_by_label_counts %>% 
-  filter(label == 0) 
-wordcloud(toPlot$word, toPlot$n, max.words=100, random.order=FALSE, scale=c(3,0.5), main = "Title")
+words_tokenized_by_label_counts %>%
+  ggplot(aes(label = word, size = n)) + geom_text_wordcloud(area_corr = TRUE) +
+  scale_size_area(max_size = 24) + theme_minimal() + facet_wrap(~ label)
 
 ```
 From this visualization, you can see that stress free posts have to do with a diversity of topics. There are a significant amount of negative words that appear fairly frequently, such as "homeless", "ptsd" and anxiety, but the most common words are "I've" "don't", "time", and "people". Since the non-stress-related posts are still picked from subreddits related to stressful topics, this may be people simply talking about how they dealt with these issues or calmly asking for advice, rather than being obviously stressed while writing their posts.  
 
-```{r}
-layout(matrix(c(1, 2), nrow=2), heights=c(1, 4))
-par(mar=rep(0, 4))
-plot.new()
-text(x=0.5, y=0.5, "Stressed Posts")
-toPlot2 <- words_tokenized_by_label_counts %>% 
-  filter(label == 1) 
-wordcloud(toPlot2$word, toPlot2$n, max.words=100, random.order=FALSE, scale=c(3,0.5), main = "Title")
-```
 Among the stress-related posts, there is significantly more variation in the words and the only words that appear very frequently are "i'm", "don't", "feel", "time" and anxiety. There appear to be a lot of posts that seem related to the diversity of posts. Some words that commonly appear are "fucking", "abuse", "panic", and "depression". Time appears frequently in both the stress-related and non-stress-related subreddits, but proportionately much more frequently in the non-stress-related.  
 Overall, the stressed posts' word distributions and the non-stressed posts' word distributions appear similar, but the stressed posts appear to be more diverse, and the non-stressed posts appear to be more similar and have less very negative words among the top 100 words.  
 
@@ -400,20 +387,27 @@ ggplot(reddit_stress_data, aes(x = sentiment, y = subreddit, fill = subreddit)) 
   theme_ridges() + 
   theme(legend.position = "none") + facet_wrap(~ label)
 ```
-If we look at the differences by label, we can see further differences along the distribution. r/almosthomeless is normally distributed for stressed posts, whereas right skewed for the non-stressed posts. r/domesticviolence is right skewed for non-stressed posts and significantly more normally distributed. r/relationships looks like it is approximately normally distributed for both the stressed posts and the non-stressed posts. r/food_pantry is extremely skewed, which may be influenced by the smaller number of posts overall. Some of this may be affected by the overall number of posts in each category: for example, r/domesticviolence tends to have a higher proportion of stressed posts, whereas r/relationships has the most posts and tends to be more non-stressed than stressed.
+If we look at the differences by label, we can see further differences along the distribution. r/almosthomeless is normally distributed for stressed posts, whereas right skewed for the non-stressed posts. r/domesticviolence is right skewed for non-stressed posts and significantly more normally distributed. r/relationships looks like it is approximately normally distributed for both the stressed posts and the non-stressed posts. r/food_pantry is extremely skewed, which may be influenced by the smaller number of posts overall. Some of this may be affected by the overall number of posts in each category: for example, r/domesticviolence tends to have a higher proportion of stressed posts, whereas r/relationships has the most posts and tends to be more non-stressed than stressed.  
+
 ## Statistical Analysis
 ### Chi-Square Test
-Let's test to see if the stress data by subreddit and label are associated, and set the p-value to be 0.05.
+Let's test to see if the stress data by subreddit and label are associated, and set the p-value to be 0.05.  
 ```{r}
 chisq.test(reddit_stress_data$subreddit, reddit_stress_data$label)
 ```
-Since our p-value is less than 0.05, we can reject the null hypothesis that the subreddits do not differ significantly in label by subreddit, and determine that there are significant differences between the label distribution by subreddit.
+Since our p-value is less than 0.05, we can reject the null hypothesis that the subreddits do not differ significantly in label by subreddit, and determine that there are significant differences between the label distribution by subreddit.  
 
-Now, let's compare the differences in sentiment by label using the analysis of variance test, and again set our p-value to be 0.05.
+### ANOVA Tests
+Now, let's compare the differences in sentiment by label using the analysis of variance test, and again set our p-value to be 0.05.  
 ```{r}
-summary(aov(reddit_stress_data$label ~ reddit_stress_data$sentiment))
+summary(aov(reddit_stress_data$sentiment ~ reddit_stress_data$label))
 ```
-Since the p-value is less than 0.05, we can reject the null hypothesis that the differences between sentiment by label are not significant and say that the differences between sentiment by label are significant.
+Since the p-value is less than 0.05, we can reject the null hypothesis that the differences between sentiment by label are not significant and say that the differences between sentiment by label are significant.  
+
+```{r}
+summary(aov(reddit_stress_data$sentiment ~ reddit_stress_data$subreddit + reddit_stress_data$label))
+```
+
 
 ### Decision Tree Model
 Finally, I will run a decision tree model on the dataset and see what variables are the strongest in predicting whether or not a post is stressed.  
