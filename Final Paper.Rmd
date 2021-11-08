@@ -2,10 +2,10 @@
 title: "R for Data Science Project 1: Stress Analysis On Reddit"
 author: "Melanie McCord"
 output: 
-  word_document:
+  pdf_document:
     toc: true
 ---
-
+Note: This is the full paper. For a brief look at my work, look at R_for_DS_Final_Paper.
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 # load required packages
@@ -24,6 +24,7 @@ library(rpart.plot)
 library(wordcloud)
 library(wordcloud2)
 library(RColorBrewer)
+library(feather)
 source("./model_training_functions/train_test_split.R")
 source("./feature_creation_functions/create_bag_of_words_model.R")
 source("./feature_creation_functions/create_sentiment_model.R")
@@ -52,6 +53,7 @@ Future work may include exploring the other variables, which include social medi
 train_data <- read_csv("reddit_stress_data/dreaddit-train.csv", show_col_types = FALSE)
 test_data <- read_csv("reddit_stress_data/dreaddit-test.csv", show_col_types = FALSE)
 reddit_stress_data <- add_row(train_data, test_data)
+write_feather(reddit_stress_data, "reddit_stress_data.feather")
 ```
 ## Research Questions
 The topics I am exploring in this paper are: How does the stress label differ among subreddits? How can we predict stress given words in the data and sentiment? Is there an association between stress-related data and subreddits?  
@@ -188,6 +190,7 @@ In this visualization, we can get a better idea of the diversity of topics cover
 
 #### Top 10 Words By Label  
 ```{r}
+num = 200
 words_tokenized_by_label_counts <- reddit_stress_data %>%
   select(c("id", "text", "label", "subreddit")) %>%
   unnest_tokens(word, text) %>%
@@ -205,9 +208,10 @@ words_tokenized_by_label_counts %>%
   mutate(label = as.factor(label)) %>%
   arrange(label, n) %>%  
   mutate(topic_r = row_number()) %>%
-  ggplot(aes(word, n, fill = label)) + 
-  geom_col() +
-  facet_wrap(~ label, scales = "free") + theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+  ggplot(aes(label = word, size = n)) + 
+  geom_text_wordcloud() +
+  facet_wrap(~ label) +
+  theme_minimal()
 ```
 
 The most common words by label are significantly different. Stress related posts are most likely to talk about anxiety and day. Non-stress related posts are less likely to talk about feel and more likely to talk about friends and people.  
